@@ -55,7 +55,9 @@ ROOT_URLCONF = 'nineround_web.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            BASE_DIR / 'templates' # memberitahu project untuk dapat mengakses folder templates (./nineround_web/templates)
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

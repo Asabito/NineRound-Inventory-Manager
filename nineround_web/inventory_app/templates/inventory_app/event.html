@@ -1,0 +1,49 @@
+<style>
+    table, th, td {
+      border:1px solid black;
+    }
+    #subHeading{
+        margin: 30px;
+    }
+    #subHeading input{
+        width: 500px;
+        height: 45px;
+        font-size: 20px;
+        padding-left: 10px;
+        border-radius: 12px;
+    }
+    #subHeading button{
+        float: right;
+    }
+</style>
+
+
+{% extends 'main.html' %}
+{% block content %}
+<h2 style="margin: 50px 0 20px 20px;">Events</h2>
+<div id="subHeading">
+    <input type="text" placeholder="Search event...">
+    <button>Delete Event</button>
+    <button>New Event</button>
+</div>
+<table>
+    <tr>
+        <th>Nama</th>
+        <th>Lokasi</th>
+        <th>Tanggal Mulai</th>
+        <th>Tanggal Berakhir</th>
+        <th>Status</th>
+    </tr>
+    {% for event in events %}
+    <tr>
+        <td>{{event.nama}}</td>
+        <td>{{event.lokasi}}</td>
+        <td>{{event.tanggal_mulai}}</td>
+        <td>{{event.tanggal_berakhir}}</td>
+        <td>{{event.status}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
+

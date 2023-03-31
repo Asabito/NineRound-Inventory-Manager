@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body style="background-color: #878787;">
+    <div id="sidebar">
+        {% include 'side_navbar.html' %}
+    </div>
+    
+    <div id="webContent">
+        <div id="webContentPlaceHolder">
+            {% block content %}
+    
+            {% endblock %}
+        </div>
+
+    </div>
+</body>
+</html>
+
+
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        font-family: sans-serif;
+    }
+
+    body{
+        display: flex;
+    }
+
+
+    /* ----- Side bar ----- */
+    #sidebar{
+        width: 20%;
+        height: 100%;
+        background-color: red;
+    }
+    .sidebarMenu{
+        background-color: blue;
+        width: 100%;
+        height: 74px;
+        display: flex;
+        align-items: center;
+    }
+    .sidebarMenuImg {
+        flex-grow: 2;
+        flex: 0 0 auto; 
+        /* gatau flex diatas ini untuk apa? */
+        border: 2px solid white;
+        margin: 0 10px 0 10px;
+    }
+    .sidebarMenuImg img{
+        width: 50px;
+        height: 50px;
+    }
+    .sidebarMenuText {
+        flex-grow: 8;
+        border: 2px solid brown;
+        text-align: center;
+        color: white;
+        font-size: 24px;
+    }
+    #header{
+        /* font-size: 52px; */
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    #header h1{
+        font-size: 52px;
+    }
+    #header p{
+        font-size: 24px;
+    }
+    /* ----- End of Side bar ----- */
+
+
+
+    /* ----- Web Content ----- */
+    #webContent{
+        width: 80%;
+        /* height: 100%; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #webContentPlaceHolder{
+        width: 93%;
+        height: 93%;
+        background-color: #FFFFFF;
+        border-radius: 13px;
+        padding: 10px;
+    }
+</style>
