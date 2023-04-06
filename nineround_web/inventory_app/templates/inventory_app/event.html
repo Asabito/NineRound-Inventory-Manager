@@ -2,8 +2,24 @@
     table, th, td {
       border:1px solid black;
     }
+    /* ----------------------------------- Heading and Sub-heading ----------------------------------- */
+    #heading{
+        flex-grow: 2;
+        display: flex;
+        align-items: end;
+        padding-left: 25px;
+        /* justify-content: center; */
+    }
     #subHeading{
-        margin: 30px;
+        /* margin: 0 30px 0 30px; */
+      /* border:1px solid black; */
+
+        /* height: 800px; */
+        display: flex;
+        flex-grow: 2;
+        align-items: center;
+        /* border:1px solid black; */
+
     }
     #subHeading input{
         width: 500px;
@@ -11,22 +27,125 @@
         font-size: 20px;
         padding-left: 10px;
         border-radius: 12px;
+        margin: 0 0 0 10px;
+        
     }
-    #subHeading button{
-        float: right;
+    #eventButtons{
+        /* float: right; */
+        margin-left: auto;
+    }
+    #eventButtons button{
+        width: 143px;
+        height: 43px;
+        margin: 0 10px 0 5px;
+    }
+    #deleteEventBtn{
+        background-color: #D4D4D4;
+        color: white;
+        border: 0;
+    }
+    #newEventBtn{
+        background-color: #813E00;
+        color: white;
+        border: 0;
+    }
+    /* #newEventBtn img{
+        width: 2px;
+        height: 2px;
+        border: 2px solid black;
+    } */
+
+    /* ----------------------------------- Table ----------------------------------- */
+    #eventTable{
+        /* flex-grow: 6; */
+      /* border:1px solid black; */
+        height: 80%;
+        margin-bottom: 10px;
+    }
+    .scrollablePartTable{
+        /* display: flex; */
+        overflow: scroll;
+        overflow-x: hidden;
+
+        height: 95%;
+    }
+    .eventTableRow{
+        display: flex;
+        border-bottom: 2px solid #878787;
+        padding: 12px;
+    }
+    .eventTableHeading{
+        font-weight: bold;
+    }
+    .eventTableColumn{
+        /* padding: 0 10px 0 10px; */
+        /* width: 20%; */
+    }
+    .eventTableRowContent:hover{
+        background-color: silver;
+        cursor: default;
+    }
+    .namaHeading{
+        padding-left: 10px;
+        width: 15%;
+    }
+    .lokasiHeading{
+        width: 40%;
+    }
+    .tanggalMulaiHeading{
+        width: 15%;
+
+    }
+    .tanggalBerakhirHeading{
+        width: 15%;
+    }
+    .statusHeading{
+        width: 15%;
+
     }
 </style>
 
 
 {% extends 'main.html' %}
 {% block content %}
-<h2 style="margin: 50px 0 20px 20px;">Events</h2>
-<div id="subHeading">
-    <input type="text" placeholder="Search event...">
-    <button>Delete Event</button>
-    <button>New Event</button>
+{% load static %}
+<div id="heading"">
+    <h2 style="color: #813E00;brown;">Events</h2>
 </div>
-<table>
+<div id="subHeading">
+    <form method="GET" action="{% url 'events' %}">
+        <input type="text" placeholder="Search event..." name="q">
+    </form>
+    <div id="eventButtons">
+        <button id="deleteEventBtn">Delete Event</button>
+        <button id="newEventBtn">New Event</button>
+    </div>
+</div>
+<div id="eventTable">
+    <div class="eventTableRow">
+        <input type="checkbox">
+        <div class="eventTableHeading namaHeading">Nama</div>
+        <div class="eventTableHeading lokasiHeading">Lokasi</div>
+        <div class="eventTableHeading tanggalMulaiHeading">Tanggal Mulai</div>
+        <div class="eventTableHeading tanggalBerakhirHeading">Tanggal Berakhir</div>
+        <div class="eventTableHeading statusHeading">Status</div>
+    </div>
+    <div class="scrollablePartTable">
+        {% for event in events %}
+        <a class="eventTableRow eventTableRowContent" href="/event-detail/{{event.id}}">
+            <input type="checkbox">
+            <div class="eventTableColumn namaHeading">{{event.nama}}</div>
+            <div class="eventTableColumn lokasiHeading">{{event.lokasi}}</div>
+            <div class="eventTableColumn tanggalMulaiHeading">{{event.tanggal_mulai}}</div>
+            <div class="eventTableColumn tanggalBerakhirHeading">{{event.tanggal_berakhir}}</div>
+            <div class="eventTableColumn statusHeading">{{event.status}}</div>
+        </a>
+    
+        {% endfor %}
+    </div>
+
+</div>
+<!-- <table>
     <tr>
         <th>Nama</th>
         <th>Lokasi</th>
@@ -43,7 +162,7 @@
         <td>{{event.status}}</td>
     </tr>
     {% endfor %}
-</table>
+</table> -->
 
 {% endblock %}
 

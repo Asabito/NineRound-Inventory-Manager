@@ -1,3 +1,54 @@
+    <style>
+            /* ----- Side bar ----- */
+        #sidebar{
+            width: 20%;
+            height: 100%;
+            background-color: #813E00;
+        }
+        .sidebarMenu{
+            background-color: #813E00;
+            width: 100%;
+            height: 74px;
+            display: flex;
+            align-items: center;
+            cursor: default;
+        }
+        .sidebarMenu:hover{
+            background-color: #6D3400;
+        }
+        .sidebarMenuImg {
+            flex-grow: 2;
+            flex: 0 0 auto; 
+            /* gatau flex diatas ini untuk apa? */
+            margin: 0 10px 0 10px;
+        }
+        .sidebarMenuImg img{
+            width: 50px;
+            height: 50px;
+        }
+        .sidebarMenuText {
+            flex-grow: 8;
+            /* text-align: center; */
+            margin-left: 8px;
+            color: white;
+            font-size: 20px;
+        }
+        #header{
+            /* font-size: 52px; */
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #header h1{
+            font-size: 52px;
+        }
+        #header p{
+            font-size: 24px;
+        }
+        /* ----- End of Side bar ----- */
+    </style>
+    
+    {% load static %}
     <div id="header">
         <h1>Nine Round</h1>
         <p>Inventory</p>
@@ -5,7 +56,7 @@
 
     <div class="sidebarMenu">
         <div class="sidebarMenuImg">
-            <img src="" alt="">
+            <img src="{% static 'Ellipse.png' %}" alt="">
         </div>
         <div class="sidebarMenuText">
             Event
@@ -13,7 +64,7 @@
     </div>
     <div class="sidebarMenu">
         <div class="sidebarMenuImg">
-            <img src="" alt="">
+            <img src="{% static 'Ellipse.png' %}" alt="">
         </div>
         <div class="sidebarMenuText">
             Inventory
@@ -21,7 +72,7 @@
     </div>
     <div class="sidebarMenu">
         <div class="sidebarMenuImg">
-            <img src="" alt="">
+            <img src="{% static 'Ellipse.png' %}" alt="">
         </div>
         <div class="sidebarMenuText">
             Barcode

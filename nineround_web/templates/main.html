@@ -29,56 +29,34 @@
         margin: 0;
         font-family: sans-serif;
     }
+    button{
+
+    }
 
     body{
         display: flex;
     }
+    /* ----- Scrollbar ----- */
+    /* width */
+    ::-webkit-scrollbar {
+    width: 10px;
+    }
 
+    /* Track */
+    ::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+    }
+    
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+    background: #888; 
+    }
 
-    /* ----- Side bar ----- */
-    #sidebar{
-        width: 20%;
-        height: 100%;
-        background-color: red;
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
     }
-    .sidebarMenu{
-        background-color: blue;
-        width: 100%;
-        height: 74px;
-        display: flex;
-        align-items: center;
-    }
-    .sidebarMenuImg {
-        flex-grow: 2;
-        flex: 0 0 auto; 
-        /* gatau flex diatas ini untuk apa? */
-        border: 2px solid white;
-        margin: 0 10px 0 10px;
-    }
-    .sidebarMenuImg img{
-        width: 50px;
-        height: 50px;
-    }
-    .sidebarMenuText {
-        flex-grow: 8;
-        border: 2px solid brown;
-        text-align: center;
-        color: white;
-        font-size: 24px;
-    }
-    #header{
-        /* font-size: 52px; */
-        color: white;
-        text-align: center;
-        margin-bottom: 20px;
-    }
-    #header h1{
-        font-size: 52px;
-    }
-    #header p{
-        font-size: 24px;
-    }
-    /* ----- End of Side bar ----- */
+
 
 
 
@@ -97,5 +75,7 @@
         background-color: #FFFFFF;
         border-radius: 13px;
         padding: 10px;
+        display: flex;
+        flex-direction: column;
     }
 </style>

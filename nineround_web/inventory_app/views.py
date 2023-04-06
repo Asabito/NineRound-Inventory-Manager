@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Event # import models
+from django.db.models import Q
 
 
 # events = [
@@ -10,8 +11,19 @@ from .models import Event # import models
 # ]
 
 # Create your views here.
-def event(request):
+def events(request):
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
     events = Event.objects.all()
+    events = Event.objects.filter(
+        Q(nama__icontains=q) |
+        Q(lokasi__icontains=q) |
+        Q(status__icontains=q)
+    )
     context = {'events': events}
     return render(request, 'inventory_app/event.html', context=context)
     # return HttpResponse('Home Page')
+
+def eventDetail(request, pk):
+
+
+    return render(request, 'inventory_app/event-detail.html', )
