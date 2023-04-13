@@ -1,7 +1,5 @@
 <style>
-    table, th, td {
-      border:1px solid black;
-    }
+
     /* ----------------------------------- Heading and Sub-heading ----------------------------------- */
     #heading{
         flex-grow: 2;
@@ -62,13 +60,7 @@
         height: 80%;
         margin-bottom: 10px;
     }
-    .scrollablePartTable{
-        /* display: flex; */
-        overflow: scroll;
-        overflow-x: hidden;
 
-        height: 95%;
-    }
     .eventTableRow{
         display: flex;
         border-bottom: 2px solid #878787;
@@ -76,10 +68,6 @@
     }
     .eventTableHeading{
         font-weight: bold;
-    }
-    .eventTableColumn{
-        /* padding: 0 10px 0 10px; */
-        /* width: 20%; */
     }
     .eventTableRowContent:hover{
         background-color: silver;
@@ -130,7 +118,7 @@
         <div class="eventTableHeading tanggalBerakhirHeading">Tanggal Berakhir</div>
         <div class="eventTableHeading statusHeading">Status</div>
     </div>
-    <div class="scrollablePartTable">
+    <div class="scrollablePartTable" style="height: 95%;">
         {% for event in events %}
         <a class="eventTableRow eventTableRowContent" href="/event-detail/{{event.id}}">
             <input type="checkbox">
@@ -145,24 +133,5 @@
     </div>
 
 </div>
-<!-- <table>
-    <tr>
-        <th>Nama</th>
-        <th>Lokasi</th>
-        <th>Tanggal Mulai</th>
-        <th>Tanggal Berakhir</th>
-        <th>Status</th>
-    </tr>
-    {% for event in events %}
-    <tr>
-        <td>{{event.nama}}</td>
-        <td>{{event.lokasi}}</td>
-        <td>{{event.tanggal_mulai}}</td>
-        <td>{{event.tanggal_berakhir}}</td>
-        <td>{{event.status}}</td>
-    </tr>
-    {% endfor %}
-</table> -->
-
 {% endblock %}
 

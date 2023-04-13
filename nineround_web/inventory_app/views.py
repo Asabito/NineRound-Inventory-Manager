@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Event # import models
+from .models import Event, Items # import models
 from django.db.models import Q
 
 
@@ -20,10 +20,21 @@ def events(request):
         Q(status__icontains=q)
     )
     context = {'events': events}
+    print('context ===== ',context)
+
     return render(request, 'inventory_app/event.html', context=context)
     # return HttpResponse('Home Page')
 
 def eventDetail(request, pk):
+    event_details = Items.objects.filter(events__id=pk) # query all Items, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
+    events = Event.objects.filter(id=pk)
+    context = {'event_details':event_details, 'events':events}
+    print('context ===== ',context)
 
+    return render(request, 'inventory_app/event-detail.html', context=context)
 
-    return render(request, 'inventory_app/event-detail.html', )
+def stockChecking(request, pk):
+    event_details = Items.objects.filter(events__id=pk) # query all Items, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
+    events = Event.objects.filter(id=pk)
+    context = {'event_details':event_details, 'events':events}
+    return render(request, 'inventory_app/stock-checking.html', context=context)
