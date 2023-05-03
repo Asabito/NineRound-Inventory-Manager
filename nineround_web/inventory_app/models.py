@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
     
 class Inventory(models.Model):
+    id = models.CharField(primary_key=True, max_length=6)
     nama = models.CharField(max_length=250)
     keterangan = models.CharField(max_length=250)
     ukuran_choices = [
@@ -37,6 +38,10 @@ class Event(models.Model):
         return self.nama
     
 class EventItems(models.Model):
+    # gunakan Class Meta untuk melakukan setting sesuai terhadap model yang dibuat, pilihan setting tersedia oleh Django
+    class Meta:
+        # gunakan unique_together untuk membuat Composite Key (tr table dengan 2 kolom sebagai PK)
+        unique_together = (('events','items'),)
     events = models.ForeignKey(Event, on_delete=models.CASCADE)
     items = models.ForeignKey(Inventory, on_delete=models.CASCADE)
     statusInEventChoices = [
