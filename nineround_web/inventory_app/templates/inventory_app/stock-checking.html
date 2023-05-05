@@ -1,1 +1,203 @@
-{% extends event.html %}
+<style>
+    /* ----------------------------------- Heading ----------------------------------- */
+    
+    #heading {
+        display: inline-flex;
+        margin: 70px 20px 0 50px;
+        /* border: 1px black solid; */
+    }
+    
+    #eventDate {
+        background-color: #FF4444;
+        height: max-content;
+        margin-left: auto;
+        height: 35px;
+        width: 210px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 50px;
+        margin-top: 20px;
+    }
+    
+    #subHeading {
+        display: inline-flex;
+        /* justify-content: center; */
+        align-items: center;
+        margin: 10px 20px 20px 50px;
+        /* border: 1px black solid; */
+    }
+    
+    #subHeadingTextFields {
+        margin-left: auto;
+        margin-right: 50px;
+    }
+    
+    .inputKodeBarangTextField {
+        /* border: 1px blue solid; */
+        margin-left: auto;
+        display: inline-flex;
+        height: 30px;
+    }
+    
+    #kodeBarangSearchButton a div {
+        /* align-items: center; */
+        height: 30px;
+        width: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #3A3A3A;
+        border-radius: 0px 4px 4px 0px;
+        font-size: 12px;
+    }
+    /* kodeBarangSearchButton:hover {
+        pointe
+    } */
+    
+    .inputKodeBarangTextField>input {
+        width: 200px;
+        padding-left: 10px;
+        /* border: 1px solid black; */
+        /* border-radius: 10px 0px 0px 10px; */
+        border: 1px solid #676767;
+        border-right: 0;
+        border-radius: 4px 0 0 4px;
+    }
+    /* ----------------------------------- Table ----------------------------------- */
+    
+    #itemStockCheckingTable {
+        /* height: 100px; */
+    }
+    
+    .itemTableHeading {
+        display: inline-flex;
+    }
+    
+    .itemTableRow {
+        display: flex;
+        padding: 12px;
+        border-bottom: 2px solid #878787;
+    }
+    
+    .itemID {
+        width: 7%;
+    }
+    
+    .namaPakaianHeading {
+        width: 22%;
+    }
+    
+    .keteranganHeading {
+        width: 40%;
+    }
+    
+    .ukuranHeading {
+        width: 15%;
+    }
+    
+    .hargaHeading {
+        width: 15%;
+    }
+    
+    #itemAggregation {
+        display: flex;
+        /* width: 500px; */
+        border: solid 2px #878787;
+        /* border-top: 0; */
+    }
+    
+    .aggregation {
+        width: 100%;
+        display: flex;
+        /* border: solid 1px black; */
+        align-items: center;
+    }
+    
+    .itemColorIndicator {
+        width: 15px;
+        height: 15px;
+        margin-right: 5px;
+    }
+    /* ----------------------------------- Others ----------------------------------- */
+    
+    a,
+    a:visited,
+    a:hover,
+    a:active {
+        color: white;
+    }
+</style>
+
+{% extends 'main.html' %} {% block content %}
+<div id="heading">
+    {% for event in events %}
+    <div>
+        <h2>{{event.nama}}</h2>
+        <h4 style="margin-top: 15px;">{{event.lokasi}}</h4>
+    </div>
+    <div id="eventDate">
+        <h5>{{event.tanggal_mulai}} - {{event.tanggal_berakhir}}</h5>
+    </div>
+</div>
+
+<div id="subHeading">
+    <div style="font-weight: bold; color: #4478FF; ">
+        Pengecekan dilakukan
+    </div>
+    <div id="subHeadingTextFields">
+        <div class="inputKodeBarangTextField">
+            <input type="text" placeholder="Kode barang...">
+            <div id="kodeBarangSearchButton">
+                <a href="">
+                    <div>
+                        Tersedia
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="inputKodeBarangTextField">
+            <input type="text" placeholder="Kode barang...">
+            <div id="kodeBarangSearchButton">
+                <a href="">
+                    <div>
+                        Laku
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="itemStockCheckingTable">
+    <div class="itemTableHeading itemTableRow">
+        <div class="itemID">ID Item</div>
+        <div class="namaPakaianHeading">Nama Pakaian</div>
+        <div class="keteranganHeading">Keterangan</div>
+        <div class="ukuranHeading">Ukuran</div>
+        <div class="hargaHeading">Harga</div>
+    </div>
+    <div class="scrollablePartTable" style="height: 400px;">
+        {% for event_detail in event_details %}
+        <div class="itemTableRow">
+            <div class="itemID">{{event_detail.id}}</div>
+            <div class="namaPakaianHeading">{{event_detail.nama}}</div>
+            <div class="keteranganHeading">{{event_detail.keterangan}}</div>
+            <div class="ukuranHeading">{{event_detail.ukuran}}</div>
+            <div class="hargaHeading">{{event_detail.harga}}</div>
+        </div>
+        {% endfor %}
+    </div>
+    <div id="itemAggregation">
+        <div class="aggregation">
+            <div></div>Total item: </div>
+        <div class="aggregation">
+            <div class="itemColorIndicator" style="background-color:#06E82A ;"></div>Laku: </div>
+        <div class="aggregation">
+            <div class="itemColorIndicator" style="background-color:#E1BD00 ;"></div>Tersedia: </div>
+        <div class="aggregation">
+            <div class="itemColorIndicator" style="background-color:#FF4B4B ;"></div>Tidak diketahui: </div>
+    </div>
+</div>
+{% endfor %} {% endblock %}

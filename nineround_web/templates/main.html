@@ -1,25 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body style="background-color: #878787;">
     <div id="sidebar">
         {% include 'side_navbar.html' %}
     </div>
-    
+
     <div id="webContent">
         <div id="webContentPlaceHolder">
-            {% block content %}
-    
-            {% endblock %}
+            {% block content %} {% endblock %}
         </div>
 
     </div>
 </body>
+
 </html>
 
 
@@ -29,52 +30,50 @@
         margin: 0;
         font-family: sans-serif;
     }
-    button{
-
-    }
+    
     a:link {
-      text-decoration: none;
-}
-
-
-
-    body{
+        text-decoration: none;
+    }
+    
+    body {
         display: flex;
     }
     /* ----- Scrollbar ----- */
     /* width */
-    ::-webkit-scrollbar {
-    width: 10px;
+    
+     ::-webkit-scrollbar {
+        width: 10px;
     }
-
     /* Track */
-    ::-webkit-scrollbar-track {
-    background: #f1f1f1; 
+    
+     ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    /* Handle */
+    
+     ::-webkit-scrollbar-thumb {
+        background: #888;
+    }
+    /* Handle on hover */
+    
+     ::-webkit-scrollbar-thumb:hover {
+        background: #555;
     }
     
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-    background: #888; 
+    input:focus {
+        outline: none;
     }
-
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-    background: #555; 
-    }
-
-
-
-
     /* ----- Web Content ----- */
-    #webContent{
+    
+    #webContent {
         width: 80%;
         /* height: 100%; */
         display: flex;
         align-items: center;
         justify-content: center;
     }
-
-    #webContentPlaceHolder{
+    
+    #webContentPlaceHolder {
         width: 93%;
         height: 93%;
         background-color: #FFFFFF;
@@ -83,7 +82,8 @@
         display: flex;
         flex-direction: column;
     }
-    .scrollablePartTable{
+    
+    .scrollablePartTable {
         /* display: flex; */
         overflow: scroll;
         overflow-x: hidden;

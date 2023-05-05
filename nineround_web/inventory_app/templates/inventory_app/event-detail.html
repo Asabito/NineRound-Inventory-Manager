@@ -1,78 +1,82 @@
 <style>
-
-/* ----------------------------------- Heading ----------------------------------- */
-#heading{
-    display: inline-flex;
-    margin: 70px 20px 20px 50px;
-}
-#eventDate{
-    background-color: #FF4444; 
-    height: max-content; 
-    margin-left: auto; 
-    height: 35px; 
-    width: 210px; 
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 50px;
-    margin-top: 20px;
-}
-/* ----------------------------------- Table ----------------------------------- */
-#itemTable{
-    margin: 20px 40px 0 40px;
-    height: fit-content;
-}
-.itemTableHeading{
-    /* display: flex; */
-    font-weight: bold;
-
-}
-.itemTableRow{
-    display: flex;
-    border-bottom: 2px solid #878787;
-    padding: 12px;
-}
-.namaPakaianHeading{
-    padding-left: 10px;
-    width: 20%;
-
-}
-.keteranganHeading{
-    width: 40%;
-
-}
-.ukuranHeading{
-    width: 15%;
-
-}
-.hargaHeading{
-    width: 15%;
-}
-/* ----------------------------------- Table ----------------------------------- */
-#stockingButton{
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-#stockingButton a div{
-    height: 20px;
-    background-color: #4478FF;
-    color: white;
-    font-weight: bolder;
-    border-radius: 12px;
-    width: 220px;
-    height: 43px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+    /* ----------------------------------- Heading ----------------------------------- */
+    
+    #heading {
+        display: inline-flex;
+        margin: 70px 20px 20px 50px;
+    }
+    
+    #eventDate {
+        background-color: #FF4444;
+        height: max-content;
+        margin-left: auto;
+        height: 35px;
+        width: 210px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 50px;
+        margin-top: 20px;
+    }
+    /* ----------------------------------- Table ----------------------------------- */
+    
+    #itemTable {
+        margin: 20px 40px 0 40px;
+        height: fit-content;
+    }
+    
+    .itemTableHeading {
+        /* display: flex; */
+        font-weight: bold;
+    }
+    
+    .itemTableRow {
+        display: flex;
+        border-bottom: 2px solid #878787;
+        padding: 12px;
+    }
+    
+    .namaPakaianHeading {
+        padding-left: 10px;
+        width: 20%;
+    }
+    
+    .keteranganHeading {
+        width: 40%;
+    }
+    
+    .ukuranHeading {
+        width: 15%;
+    }
+    
+    .hargaHeading {
+        width: 15%;
+    }
+    /* ----------------------------------- Table ----------------------------------- */
+    
+    #stockingButton {
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    #stockingButton a div {
+        height: 20px;
+        background-color: #4478FF;
+        color: white;
+        font-weight: bolder;
+        border-radius: 12px;
+        width: 220px;
+        height: 43px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 </style>
 
-{% extends 'main.html' %}
-
-{% block content %}
+{% extends 'main.html' %} {% block content %}
 <div id="heading">
     {% for event in events %}
     <div>
@@ -93,7 +97,7 @@
         <div class="ukuranHeading">Ukuran</div>
         <div class="hargaHeading">Harga</div>
     </div>
-    <div class="scrollablePartTable" style="height: 520px;">
+    <div class="scrollablePartTable" style="height:450px;">
         {% for event_detail in event_details %}
         <div class="itemTableRow">
             <input type="checkbox">
@@ -107,6 +111,8 @@
 </div>
 
 <div id="stockingButton">
-    <a href="/event-detail/{{events.0.id}}/stock-checking"><div>Lakukan Stock Checking</div></a>
+    <a href="/event-detail/{{events.0.id}}/stock-checking">
+        <div>Lakukan Stock Checking</div>
+    </a>
 </div>
 {% endblock %}
