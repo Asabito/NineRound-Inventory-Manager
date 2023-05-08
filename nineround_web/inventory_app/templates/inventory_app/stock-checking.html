@@ -26,12 +26,13 @@
         /* justify-content: center; */
         align-items: center;
         margin: 10px 20px 20px 50px;
-        /* border: 1px black solid; */
     }
     
     #subHeadingTextFields {
         margin-left: auto;
         margin-right: 50px;
+        display: inline-flex;
+        /* border: 1px black solid; */
     }
     
     .inputKodeBarangTextField {
@@ -41,20 +42,20 @@
         height: 30px;
     }
     
-    #kodeBarangSearchButton a div {
+    .kodeBarangSearchButton input {
         /* align-items: center; */
+        outline: none;
         height: 30px;
         width: 70px;
         display: flex;
         justify-content: center;
         align-items: center;
         background-color: #3A3A3A;
+        color: white;
         border-radius: 0px 4px 4px 0px;
         font-size: 12px;
     }
-    /* kodeBarangSearchButton:hover {
-        pointe
-    } */
+
     
     .inputKodeBarangTextField>input {
         width: 200px;
@@ -94,10 +95,14 @@
     }
     
     .ukuranHeading {
-        width: 15%;
+        width: 7%;
     }
     
     .hargaHeading {
+        width: 12%;
+    }
+    
+    .statusHeading {
         width: 15%;
     }
     
@@ -147,26 +152,27 @@
         Pengecekan dilakukan
     </div>
     <div id="subHeadingTextFields">
-        <div class="inputKodeBarangTextField">
-            <input type="text" placeholder="Kode barang...">
-            <div id="kodeBarangSearchButton">
-                <a href="">
-                    <div>
-                        Tersedia
-                    </div>
-                </a>
+        <form method="POST" action="">
+            <div class="inputKodeBarangTextField">
+                {% csrf_token %}
+                <input id="tersediaText" name="tersediaText" type="text" placeholder="Kode barang...">
+                <div class="kodeBarangSearchButton">
+                    <input type="submit" value="Tersedia">
+                    </input>
+                </div>
             </div>
-        </div>
-        <div class="inputKodeBarangTextField">
-            <input type="text" placeholder="Kode barang...">
-            <div id="kodeBarangSearchButton">
-                <a href="">
-                    <div>
-                        Laku
-                    </div>
-                </a>
+        </form>
+        <form method="POST" action="" style="margin-left: 15px;">
+            <div class="inputKodeBarangTextField">
+                {% csrf_token %}
+                <input id="lakuText" name="lakuText" type="text" placeholder="Kode barang...">
+                <div class="kodeBarangSearchButton">
+                    <input type="submit" value="Terjual">
+                    </input>
+                </div>
             </div>
-        </div>
+        </form>
+        
     </div>
 </div>
 
@@ -177,27 +183,36 @@
         <div class="keteranganHeading">Keterangan</div>
         <div class="ukuranHeading">Ukuran</div>
         <div class="hargaHeading">Harga</div>
+        <div class="statusHeading">Status</div>
     </div>
     <div class="scrollablePartTable" style="height: 400px;">
-        {% for event_detail in event_details %}
-        <div class="itemTableRow">
-            <div class="itemID">{{event_detail.id}}</div>
-            <div class="namaPakaianHeading">{{event_detail.nama}}</div>
-            <div class="keteranganHeading">{{event_detail.keterangan}}</div>
-            <div class="ukuranHeading">{{event_detail.ukuran}}</div>
-            <div class="hargaHeading">{{event_detail.harga}}</div>
-        </div>
-        {% endfor %}
-    </div>
-    <div id="itemAggregation">
-        <div class="aggregation">
-            <div></div>Total item: </div>
-        <div class="aggregation">
-            <div class="itemColorIndicator" style="background-color:#06E82A ;"></div>Laku: </div>
-        <div class="aggregation">
-            <div class="itemColorIndicator" style="background-color:#E1BD00 ;"></div>Tersedia: </div>
-        <div class="aggregation">
-            <div class="itemColorIndicator" style="background-color:#FF4B4B ;"></div>Tidak diketahui: </div>
-    </div>
-</div>
-{% endfor %} {% endblock %}
+        {% for event_detail in event_details %} {% if event_detail.items_status == 'Terjual' %}
+        <div class="itemTableRow" style="background-color: #06E82A;">
+            {% elif event_detail.items_status == 'Barang tersedia' %}
+            <div class="itemTableRow" style="background-color: #E1BD00;">
+                {% elif event_detail.items_status == 'Barang tidak ada' %}
+                <div class="itemTableRow" style="background-color: #FF4444;">
+                    {% else %}
+                    <div class="itemTableRow">
+                        {% endif %}
+                        <div class="itemID">{{event_detail.id}}</div>
+                        <div class="namaPakaianHeading">{{event_detail.nama}}</div>
+                        <div class="keteranganHeading">{{event_detail.keterangan}}</div>
+                        <div class="ukuranHeading">{{event_detail.ukuran}}</div>
+                        <div class="hargaHeading">{{event_detail.harga}}</div>
+                        <div class="statusHeading">{{event_detail.items_status}}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div id="itemAggregation">
+                    <div class="aggregation">
+                        <div></div>Total item: </div>
+                    <div class="aggregation">
+                        <div class="itemColorIndicator" style="background-color:#06E82A ;"></div>Terjual: </div>
+                    <div class="aggregation">
+                        <div class="itemColorIndicator" style="background-color:#E1BD00 ;"></div>Tersedia: </div>
+                    <div class="aggregation">
+                        <div class="itemColorIndicator" style="background-color:#FF4B4B ;"></div>Tidak diketahui: </div>
+                </div>
+            </div>
+            {% endfor %} {% endblock %}

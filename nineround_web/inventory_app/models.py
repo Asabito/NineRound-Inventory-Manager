@@ -18,6 +18,13 @@ class Inventory(models.Model):
     ]
     ukuran = models.CharField(max_length=8, choices=ukuran_choices, default='All Size')
     harga = models.DecimalField(max_digits=10, decimal_places=2)
+    itemLastStatusChoices = [
+        ('Terjual', 'Terjual'),
+        ('Barang tersedia', 'Barang tersedia'),
+        ('Barang tidak ada', 'Barang tidak ada'),
+        ('Barang dalam event', 'Barang dalam event'),
+    ]
+    item_last_status = models.CharField(max_length=18, choices=itemLastStatusChoices, default='Barang tersedia')
 
     def __str__(self) -> str:
         return self.nama
@@ -33,7 +40,6 @@ class Event(models.Model):
         ('Selesai', 'Selesai'),
     ]
     status = models.CharField(max_length=11, choices=statusChoices, default='Berlangsung')
-
     def __str__(self) -> str:
         return self.nama
     
