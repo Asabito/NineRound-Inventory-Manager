@@ -22,9 +22,16 @@ def events(request):
 
 
 def newEvent(request):
-    eventForm = EventForm()
+    form = EventForm()
+    print('request.method: ',request)
+    if request.method == 'POST':
+        form = EventForm(request.POST)
+        print('form result: ',request.POST)
+        print('validity: ',form.is_valid())
+        if form.is_valid():
+            print('form result: ',form.cleaned_data)
     items = Inventory.objects.all()
-    context = {'form':eventForm, 'items':items}
+    context = {'form':form, 'items':items}
     return render(request, 'inventory_app/new-event.html', context=context)
 
 

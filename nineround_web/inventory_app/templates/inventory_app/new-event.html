@@ -59,7 +59,19 @@
         /* border: 1px solid black; */
         align-items: start;
     }
-
+    #addItemButton{
+        outline: none;
+        outline: none;
+        height: 30px;
+        width: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #3A3A3A;
+        color: white;
+        border-radius: 0px 4px 4px 0px;
+        font-size: 12px;
+    }
     /* ----------------------------------- Table ----------------------------------- */
     #itemTable {
         margin: 20px 20px 0 0px;
@@ -107,7 +119,8 @@
 <div id="heading">
     <h2>New Event</h2>
 </div>
-<form id="eventFormTextFields">
+<form id="eventFormTextFields" method="POST">
+    {% csrf_token %}
     {% for field in form %}
     {% if field.label == 'Lokasi' %}
     <div class="eachFieldAndLabel textAreaAndLabel">
@@ -117,10 +130,12 @@
             <label class="labelClass">{{ field.label }}</label>
             {{field}}
         </div>
+        
         {% endfor %}
         <div class="eachFieldAndLabel">
             <label class="labelClass">Tambahkan Item</label>
-            <input type="text" class="eventFormTextField" placeholder="barcode...">
+            <input type="text" name="barcode-input" class="eventFormTextField" placeholder="barcode...">
+            <input id="addItemButton" type="submit" value="Add item">
         </div>
         <div id="itemTable">
             <div class="itemTableHeading itemTableRow">
@@ -144,7 +159,7 @@
                 {% endfor %}
             </div>
         </div>
-
-
-</form>
+        
+    </form>
+        
 {% endblock %}

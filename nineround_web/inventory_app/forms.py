@@ -11,12 +11,13 @@ class EventForm(ModelForm):
             'nama' : TextInput(attrs={'class':'eventFormTextField', 'placeholder':'nama event...'}),
             'lokasi': Textarea(attrs={'class':'eventFormTextArea eventFormTextField', 'placeholder':'alamat event...'}),
             'tanggal_mulai': DateInput(
-                    format='%d/%m/%Y',
+                    format=('%Y-%m-%d'),
                     attrs={'class': 'eventFormTextField', 
                     'placeholder': 'Select a date',
-                    'type': 'date'}),
+                    'type': 'date'
+                    }),
             'tanggal_berakhir': DateInput(
-                    format='%d/%m/%Y',
+                    format=('%Y-%m-%d'),
                     attrs={'class': 'eventFormTextField', 
                     'placeholder': 'Select a date',
                     'type': 'date'
