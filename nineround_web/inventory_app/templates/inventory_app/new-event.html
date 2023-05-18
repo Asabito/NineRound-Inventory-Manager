@@ -59,7 +59,8 @@
         /* border: 1px solid black; */
         align-items: start;
     }
-    #addItemButton{
+
+    #addItemButton {
         outline: none;
         outline: none;
         height: 30px;
@@ -72,6 +73,7 @@
         border-radius: 0px 4px 4px 0px;
         font-size: 12px;
     }
+
     /* ----------------------------------- Table ----------------------------------- */
     #itemTable {
         margin: 20px 20px 0 0px;
@@ -111,6 +113,27 @@
     .hargaPakaian {
         width: 7%;
     }
+
+    /* ----------------------------------- Bottom ----------------------------------- */
+
+    #submitButtonDiv {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100px;
+        /* border: 1px solid black; */
+        margin: 20px 20px 0 0; 
+    }
+
+    #submitButtonDiv input {
+        height: 35px;
+        width: 70px;
+        outline: none;
+        color: white;
+        border: 0;
+        border-radius: 4px 4px 4px 4px;
+        background-color: #4478FF;
+    }
 </style>
 
 
@@ -130,7 +153,7 @@
             <label class="labelClass">{{ field.label }}</label>
             {{field}}
         </div>
-        
+
         {% endfor %}
         <div class="eachFieldAndLabel">
             <label class="labelClass">Tambahkan Item</label>
@@ -146,7 +169,7 @@
                 <div class="ukuranPakaian">Ukuran</div>
                 <div class="hargaPakaian">Harga</div>
             </div>
-            <div class="scrollablePartTable" style="height:450px;">
+            <div class="scrollablePartTable" style="height:400px;">
                 {% for item in items %}
                 <div class="itemTableRow">
                     <div class="tableNumber">{{forloop.counter}}</div>
@@ -159,7 +182,11 @@
                 {% endfor %}
             </div>
         </div>
-        
-    </form>
-        
+        <div id="submitButtonDiv">
+            <input type="submit" value="Submit" name="submit-button">
+        </div>
+    </div>
+    
+</form>
+
 {% endblock %}
