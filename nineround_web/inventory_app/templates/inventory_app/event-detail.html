@@ -39,21 +39,21 @@
     
     .namaPakaianHeading {
         padding-left: 10px;
-        width: 20%;
+        width: 30%;
     }
     
     .keteranganHeading {
-        width: 40%;
+        width: 45%;
     }
     
     .ukuranHeading {
-        width: 15%;
+        width: 10%;
     }
     
     .hargaHeading {
-        width: 15%;
+        width: 5%;
     }
-    /* ----------------------------------- Table ----------------------------------- */
+    /* ----------------------------------- Footer button ----------------------------------- */
     
     #stockingButton {
         height: 100%;
@@ -91,7 +91,6 @@
 
 <div id="itemTable">
     <div class="itemTableHeading itemTableRow">
-        <input type="checkbox">
         <div class="namaPakaianHeading">Nama Pakaian</div>
         <div class="keteranganHeading">Keterangan</div>
         <div class="ukuranHeading">Ukuran</div>
@@ -100,7 +99,6 @@
     <div class="scrollablePartTable" style="height:450px;">
         {% for event_detail in event_details %}
         <div class="itemTableRow">
-            <input type="checkbox">
             <div class="namaPakaianHeading">{{event_detail.nama}}</div>
             <div class="keteranganHeading">{{event_detail.keterangan}}</div>
             <div class="ukuranHeading">{{event_detail.ukuran}}</div>

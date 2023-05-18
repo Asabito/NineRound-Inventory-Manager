@@ -32,7 +32,7 @@ class Inventory(models.Model):
 class Event(models.Model):
     items = models.ManyToManyField(Inventory, through='EventItems')
     nama = models.CharField(max_length=80)
-    lokasi = models.CharField(max_length=250)
+    lokasi = models.TextField(max_length=300)
     tanggal_mulai = models.DateField()
     tanggal_berakhir = models.DateField()
     statusChoices = [

@@ -1,0 +1,150 @@
+<style>
+    /* ----------------------------------- Heading ----------------------------------- */
+    #heading {
+        display: inline-flex;
+        margin: 30px 20px 20px 30px;
+    }
+
+    /* ----------------------------------- Form ----------------------------------- */
+    #eventFormTextFields {
+        /* border: solid 2px red; */
+        height: 250px;
+        display: flex;
+        flex-direction: column;
+        /* font-weight: bold; */
+        margin: 0 0 0 40px;
+    }
+
+    .eventFormTextField {
+        /* class ini di define di form */
+        /* border-top: 0;
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 1px solid black; */
+        padding: 8px;
+        border: 0px solid black;
+        border-radius: 5px;
+        height: 30px;
+        margin-left: 10px;
+        background-color: #F2F2F2;
+        color: #505050;
+    }
+
+    .eventFormTextArea {
+        /* border: 1px solid black; */
+        height: 90px;
+        /* padding: 7px 7px 7px 7px; */
+        margin-left: 10px;
+        resize: none;
+
+    }
+
+    .labelClass {
+        /* border: 1px solid black; */
+        width: 150px;
+        /* text-align: right; */
+        font-weight: bold;
+    }
+
+
+    .eachFieldAndLabel {
+        /* flex-grow: 1; */
+        margin: 10px 0 0 0;
+        /* border: 1px solid black; */
+        display: flex;
+        align-items: center;
+    }
+
+    .textAreaAndLabel {
+        /* border: 1px solid black; */
+        align-items: start;
+    }
+
+    /* ----------------------------------- Table ----------------------------------- */
+    #itemTable {
+        margin: 20px 20px 0 0px;
+        height: fit-content;
+    }
+
+    .itemTableHeading {
+        font-weight: bold;
+    }
+
+    .itemTableRow {
+        display: flex;
+        border-bottom: 2px solid #878787;
+        padding: 12px;
+    }
+
+    .tableNumber {
+        width: 3%;
+    }
+
+    .itemID {
+        width: 7%;
+    }
+
+    .namaPakaian {
+        width: 30%;
+    }
+
+    .keteranganPakaian {
+        width: 45%;
+    }
+
+    .ukuranPakaian {
+        width: 7%;
+    }
+
+    .hargaPakaian {
+        width: 7%;
+    }
+</style>
+
+
+{% extends 'main.html' %}
+{% block content %}
+<div id="heading">
+    <h2>New Event</h2>
+</div>
+<form id="eventFormTextFields">
+    {% for field in form %}
+    {% if field.label == 'Lokasi' %}
+    <div class="eachFieldAndLabel textAreaAndLabel">
+        {% else %}
+        <div class="eachFieldAndLabel">
+            {% endif %}
+            <label class="labelClass">{{ field.label }}</label>
+            {{field}}
+        </div>
+        {% endfor %}
+        <div class="eachFieldAndLabel">
+            <label class="labelClass">Tambahkan Item</label>
+            <input type="text" class="eventFormTextField" placeholder="barcode...">
+        </div>
+        <div id="itemTable">
+            <div class="itemTableHeading itemTableRow">
+                <div class="tableNumber">No.</div>
+                <div class="itemID">ID</div>
+                <div class="namaPakaian">Nama Pakaian</div>
+                <div class="keteranganPakaian">Keterangan</div>
+                <div class="ukuranPakaian">Ukuran</div>
+                <div class="hargaPakaian">Harga</div>
+            </div>
+            <div class="scrollablePartTable" style="height:450px;">
+                {% for item in items %}
+                <div class="itemTableRow">
+                    <div class="tableNumber">{{forloop.counter}}</div>
+                    <div class="itemID">{{item.id}}</div>
+                    <div class="namaPakaian">{{item.nama}} </div>
+                    <div class="keteranganPakaian">{{item.keterangan}}</div>
+                    <div class="ukuranPakaian">{{item.ukuran}}</div>
+                    <div class="hargaPakaian">{{item.harga}}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+
+</form>
+{% endblock %}

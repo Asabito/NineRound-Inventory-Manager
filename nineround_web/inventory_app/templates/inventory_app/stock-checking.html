@@ -1,12 +1,12 @@
 <style>
     /* ----------------------------------- Heading ----------------------------------- */
-    
+
     #heading {
         display: inline-flex;
         margin: 70px 20px 0 50px;
         /* border: 1px black solid; */
     }
-    
+
     #eventDate {
         background-color: #FF4444;
         height: max-content;
@@ -20,28 +20,28 @@
         margin-right: 50px;
         margin-top: 20px;
     }
-    
+
     #subHeading {
         display: inline-flex;
         /* justify-content: center; */
         align-items: center;
         margin: 10px 20px 20px 50px;
     }
-    
+
     #subHeadingTextFields {
         margin-left: auto;
         margin-right: 50px;
         display: inline-flex;
         /* border: 1px black solid; */
     }
-    
+
     .inputKodeBarangTextField {
         /* border: 1px blue solid; */
         margin-left: auto;
         display: inline-flex;
         height: 30px;
     }
-    
+
     .kodeBarangSearchButton input {
         /* align-items: center; */
         outline: none;
@@ -56,7 +56,7 @@
         font-size: 12px;
     }
 
-    
+
     .inputKodeBarangTextField>input {
         width: 200px;
         padding-left: 10px;
@@ -66,67 +66,104 @@
         border-right: 0;
         border-radius: 4px 0 0 4px;
     }
+
     /* ----------------------------------- Table ----------------------------------- */
-    
+
     #itemStockCheckingTable {
         /* height: 100px; */
     }
-    
+
     .itemTableHeading {
         display: inline-flex;
+        font-weight: bold;
     }
-    
+
     .itemTableRow {
         display: flex;
         padding: 12px;
         border-bottom: 2px solid #878787;
     }
-    
+
     .itemID {
         width: 7%;
     }
-    
+
     .namaPakaianHeading {
         width: 22%;
     }
-    
+
     .keteranganHeading {
         width: 40%;
     }
-    
+
     .ukuranHeading {
         width: 7%;
     }
-    
+
     .hargaHeading {
         width: 12%;
     }
-    
+
     .statusHeading {
         width: 15%;
     }
-    
+
     #itemAggregation {
         display: flex;
         /* width: 500px; */
         border: solid 2px #878787;
+        height: 35px;
         /* border-top: 0; */
     }
-    
+
     .aggregation {
         width: 100%;
         display: flex;
         /* border: solid 1px black; */
         align-items: center;
     }
-    
+
     .itemColorIndicator {
         width: 15px;
         height: 15px;
         margin-right: 5px;
     }
+
     /* ----------------------------------- Others ----------------------------------- */
-    
+    #backButton {
+        height: 200px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        /* margin-left: auto; */
+        /* margin-top: 10px;
+        margin-right: 10px; */
+    }
+
+    #backButton a {
+        background-color: #4478FF;
+        font-weight: bold;
+        width: 100px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+    }
+
+    #backButton img {
+        /* float: left; */
+        width: 10px;
+        height: 10px;
+    }
+
+    #backButton div {
+        /* border: 1px solid black; */
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     a,
     a:visited,
     a:hover,
@@ -136,6 +173,7 @@
 </style>
 
 {% extends 'main.html' %} {% block content %}
+{% load static %}
 <div id="heading">
     {% for event in events %}
     <div>
@@ -165,14 +203,14 @@
         <form method="POST" action="" style="margin-left: 15px;">
             <div class="inputKodeBarangTextField">
                 {% csrf_token %}
-                <input id="lakuText" name="lakuText" type="text" placeholder="Kode barang...">
+                <input id="terjualText" name="terjualText" type="text" placeholder="Kode barang...">
                 <div class="kodeBarangSearchButton">
                     <input type="submit" value="Terjual">
                     </input>
                 </div>
             </div>
         </form>
-        
+
     </div>
 </div>
 
@@ -185,7 +223,7 @@
         <div class="hargaHeading">Harga</div>
         <div class="statusHeading">Status</div>
     </div>
-    <div class="scrollablePartTable" style="height: 400px;">
+    <div class="scrollablePartTable" style="height: 480px;">
         {% for event_detail in event_details %} {% if event_detail.items_status == 'Terjual' %}
         <div class="itemTableRow" style="background-color: #06E82A;">
             {% elif event_detail.items_status == 'Barang tersedia' %}
@@ -206,13 +244,23 @@
                 </div>
                 <div id="itemAggregation">
                     <div class="aggregation">
-                        <div></div>Total item: </div>
+                        Total item: </div>
                     <div class="aggregation">
-                        <div class="itemColorIndicator" style="background-color:#06E82A ;"></div>Terjual: </div>
+                        <div class="itemColorIndicator" style="background-color:#06E82A ;"></div>Terjual:
+                        {{terjual_count}}
+                    </div>
                     <div class="aggregation">
-                        <div class="itemColorIndicator" style="background-color:#E1BD00 ;"></div>Tersedia: </div>
+                        <div class="itemColorIndicator" style="background-color:#E1BD00 ;"></div>Tersedia:
+                        {{barang_tersedia_count}}
+                    </div>
                     <div class="aggregation">
-                        <div class="itemColorIndicator" style="background-color:#FF4B4B ;"></div>Tidak diketahui: </div>
+                        <div class="itemColorIndicator" style="background-color:#FF4B4B ;"></div>Tidak diketahui:
+                        {{barang_tidak_ada_count}}
+                    </div>
                 </div>
+            </div>
+            <div id="backButton"><a href="/event-detail/{{event.id}}">
+                    Back
+                </a>
             </div>
             {% endfor %} {% endblock %}
