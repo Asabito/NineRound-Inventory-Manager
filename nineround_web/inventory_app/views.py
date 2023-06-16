@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Event, Inventory, EventItems # import models
 from django.db.models import Q, F
@@ -28,7 +28,6 @@ def newEvent(request):
         request.session['barcode'] = []
     print(request.session)
     print('---------------------------before entering items: ',request.session['barcode'])
-
     # apabila klik submit-button atau delete-item, maka
     if request.method == 'POST':
         form = EventForm(request.POST)
@@ -40,8 +39,25 @@ def newEvent(request):
                 request.session['barcode'] += [request.POST['barcode-input']]
             print('---------------------------barcode in the session after input code: ',request.session['barcode'])
         elif form.is_valid() and request.POST.get("submit-button"):
-            
+            new_event = Event(nama=request.POST['nama'],
+                              lokasi= request.POST['lokasi'],
+                              tanggal_mulai = request.POST['tanggal_mulai'],
+                              tanggal_berakhir = request.POST['tanggal_berakhir']
+                              )
+            new_event.save()
+            print(f'''/n/n/n
+####################################
+Event.objects.latest('id'): {Event.objects.latest('id').id}
+####################################
+                  ''')
+            for item in request.session['barcode']:
+                new_event_item = EventItems(events_id = Event.objects.latest('id').id,
+                                            items_id = item,
+                                            status_in_event = 'Barang tersedia'
+                                            )
+                new_event_item.save()
             request.session.flush()
+            return redirect('events')
             # !!!!! add return to home to remove error
         elif form.is_valid() and request.POST.get("delete-button"):
             deleted_id = request.POST.getlist('items_to_delete')
@@ -49,7 +65,9 @@ def newEvent(request):
             for i in deleted_id:
                 request.session['barcode'].remove(i)
             print('---------------------------barcode after deleted: ',request.session['barcode'])
-            
+    print('***************************************************************************')
+    print(f'all POST request: {request.POST}')
+    print('***************************************************************************')
     request.session.modified = True
     items = Inventory.objects.filter(id__in=request.session['barcode'])
     context = {'form':form, 'items':items}

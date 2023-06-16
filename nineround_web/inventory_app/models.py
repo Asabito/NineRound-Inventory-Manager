@@ -40,6 +40,7 @@ class Event(models.Model):
         ('Selesai', 'Selesai'),
     ]
     status = models.CharField(max_length=11, choices=statusChoices, default='Berlangsung')
+    timestamp = models.DateTimeField(auto_now_add=True)
     def __str__(self) -> str:
         return self.nama
     
