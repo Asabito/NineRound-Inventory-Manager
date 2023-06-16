@@ -60,17 +60,33 @@
         align-items: start;
     }
 
-    #addItemButton {
+    #addItemButton  {
+        border: 0;
         outline: none;
         outline: none;
         height: 30px;
         width: 70px;
         display: flex;
         justify-content: center;
-        align-items: center;
         background-color: #3A3A3A;
         color: white;
         border-radius: 0px 4px 4px 0px;
+        font-size: 12px;
+    }
+
+    #deleteItemButton{
+        border: 0;
+        outline: none;
+        outline: none;
+        height: 30px;
+        width: 90px;
+        margin-left: auto;
+        margin-right: 50px;
+        display: flex;
+        justify-content: center;
+        background-color: red;
+        color: white;
+        border-radius: 4px 4px 4px 4px;
         font-size: 12px;
     }
 
@@ -88,6 +104,10 @@
         display: flex;
         border-bottom: 2px solid #878787;
         padding: 12px;
+    }
+
+    .checkBoxCol{
+        width: 2%;
     }
 
     .tableNumber {
@@ -158,10 +178,12 @@
         <div class="eachFieldAndLabel">
             <label class="labelClass">Tambahkan Item</label>
             <input type="text" name="barcode-input" class="eventFormTextField" placeholder="barcode...">
-            <input id="addItemButton" type="submit" value="Add item">
+            <input id="addItemButton" type="submit" value="Add item" name="additem-button">
+            <input id="deleteItemButton" type="submit" value="Delete Items" name="delete-button">
         </div>
         <div id="itemTable">
             <div class="itemTableHeading itemTableRow">
+                <div class="checkBoxCol"><input type="checkbox"></div>
                 <div class="tableNumber">No.</div>
                 <div class="itemID">ID</div>
                 <div class="namaPakaian">Nama Pakaian</div>
@@ -172,6 +194,7 @@
             <div class="scrollablePartTable" style="height:400px;">
                 {% for item in items %}
                 <div class="itemTableRow">
+                    <div class="checkBoxCol"><input type="checkbox"></div>
                     <div class="tableNumber">{{forloop.counter}}</div>
                     <div class="itemID">{{item.id}}</div>
                     <div class="namaPakaian">{{item.nama}} </div>
@@ -188,5 +211,9 @@
     </div>
     
 </form>
+<script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script>
+<script>
+    
+</script>
 
 {% endblock %}

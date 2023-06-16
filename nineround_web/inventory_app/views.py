@@ -23,14 +23,30 @@ def events(request):
 
 def newEvent(request):
     form = EventForm()
-    print('request.method: ',request)
+    # buat list barcode apabila belum ada
+    if 'barcode' not in request.session:
+        request.session['barcode'] = []
+    print(request.session)
+
+    # apabila klik submit-button atau delete-item, maka
     if request.method == 'POST':
         form = EventForm(request.POST)
-        print('form result: ',request.POST)
-        print('validity: ',form.is_valid())
-        if form.is_valid():
-            print('form result: ',form.cleaned_data)
-    items = Inventory.objects.all()
+        
+        if form.is_valid() and request.POST.get("additem-button"):
+            print('current barcode: ',request.POST['barcode-input'])
+            print('the inven: ',Inventory.objects.values_list('id', flat=True))
+            print('---------------------------')
+            if request.POST['barcode-input'] in Inventory.objects.values_list('id', flat=True):
+                request.session['barcode'] += [request.POST['barcode-input']]
+            print('the barcode: ',request.session['barcode'])
+        elif form.is_valid() and request.POST.get("submit-button"):
+            
+            request.session.flush()
+            # !!!!! add return to home to remove error
+        elif form.is_valid() and request.POST.get("delete-item"):
+            None
+    print('before entering items: ',request.session['barcode'])
+    items = Inventory.objects.filter(id__in=request.session['barcode'])
     context = {'form':form, 'items':items}
     return render(request, 'inventory_app/new-event.html', context=context)
 
