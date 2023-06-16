@@ -27,25 +27,30 @@ def newEvent(request):
     if 'barcode' not in request.session:
         request.session['barcode'] = []
     print(request.session)
+    print('---------------------------before entering items: ',request.session['barcode'])
 
     # apabila klik submit-button atau delete-item, maka
     if request.method == 'POST':
         form = EventForm(request.POST)
         
         if form.is_valid() and request.POST.get("additem-button"):
-            print('current barcode: ',request.POST['barcode-input'])
-            print('the inven: ',Inventory.objects.values_list('id', flat=True))
-            print('---------------------------')
-            if request.POST['barcode-input'] in Inventory.objects.values_list('id', flat=True):
+            print('---------------------------current barcode: ',request.POST['barcode-input'])
+            # print('---------------------------the inven: ',Inventory.objects.values_list('id', flat=True))
+            if request.POST['barcode-input'] in Inventory.objects.values_list('id', flat=True) and request.POST['barcode-input'] not in request.session['barcode']:
                 request.session['barcode'] += [request.POST['barcode-input']]
-            print('the barcode: ',request.session['barcode'])
+            print('---------------------------barcode in the session after input code: ',request.session['barcode'])
         elif form.is_valid() and request.POST.get("submit-button"):
             
             request.session.flush()
             # !!!!! add return to home to remove error
-        elif form.is_valid() and request.POST.get("delete-item"):
-            None
-    print('before entering items: ',request.session['barcode'])
+        elif form.is_valid() and request.POST.get("delete-button"):
+            deleted_id = request.POST.getlist('items_to_delete')
+            # print(f'*************************** deleted_id = {deleted_id}')
+            for i in deleted_id:
+                request.session['barcode'].remove(i)
+            print('---------------------------barcode after deleted: ',request.session['barcode'])
+            
+    request.session.modified = True
     items = Inventory.objects.filter(id__in=request.session['barcode'])
     context = {'form':form, 'items':items}
     return render(request, 'inventory_app/new-event.html', context=context)
