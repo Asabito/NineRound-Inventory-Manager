@@ -3,8 +3,13 @@
 
     #heading {
         display: inline-flex;
-        margin: 70px 20px 0 50px;
-        /* border: 1px black solid; */
+        /* margin: 70px 20px 0 50px; */
+        background-color: #3A3A3A;
+        height: 70px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px 13px 0 0;
+
     }
 
     #eventDate {
@@ -25,7 +30,12 @@
         display: inline-flex;
         /* justify-content: center; */
         align-items: center;
-        margin: 10px 20px 20px 50px;
+        margin: 10px 20px 20px 20px;
+        /* border: 1px solid black; */
+    }
+
+    .eventInfo {
+        margin: 10px;
     }
 
     #subHeadingTextFields {
@@ -130,26 +140,43 @@
     }
 
     /* ----------------------------------- Others ----------------------------------- */
-    #backButton {
-        height: 200px;
-        display: inline-flex;
+    .footerButtons {
+        display: flex;
         justify-content: center;
-        align-items: center;
-        /* margin-left: auto; */
-        /* margin-top: 10px;
-        margin-right: 10px; */
     }
 
-    #backButton a {
-        background-color: #4478FF;
+    .button {
+        height: 200px;
+        display: inline-flex;
+        align-items: center;
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+
+    .button input {
         font-weight: bold;
+        border: 0;
+        outline: none;
+        font-size: 16px;
         width: 100px;
         height: 40px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
         border-radius: 8px;
+        color: white;
     }
+
+    .saveButton input {
+        background-color: #4478FF;
+
+    }
+
+    .cancelButton input {
+        background-color: grey;
+
+    }
+
 
 
     a,
@@ -165,39 +192,30 @@
 <div id="heading">
     {% for event in events %}
     <div>
-        <h2>{{event.nama}}</h2>
-        <h4 style="margin-top: 15px;">{{event.lokasi}}</h4>
-    </div>
-    <div id="eventDate">
-        <h5>{{event.tanggal_mulai}} - {{event.tanggal_berakhir}}</h5>
+        <h1 style=" color: white; align-self: center;">Tambah Item</h1>
+
     </div>
 </div>
 
 <div id="subHeading">
-    <div style="font-weight: bold; color: #4478FF; ">
-        Pengecekan dilakukan
+    <div>
+        <h3 class="eventInfo">{{event.nama}}</h3>
+        <h4 class="eventInfo">{{event.lokasi}}</h4>
+            <h4 class="eventInfo">{{event.tanggal_mulai}} - {{event.tanggal_berakhir}}</h4>
     </div>
+
     <div id="subHeadingTextFields">
         <form method="POST" action="">
             <div class="inputKodeBarangTextField">
                 {% csrf_token %}
-                <input id="tersediaText" name="tersediaText" type="text" placeholder="Kode barang...">
+                <input id="tambahItem" name="tambah-item-textfield" type="text" placeholder="Kode barang...">
                 <div class="kodeBarangSearchButton">
-                    <input type="submit" value="Tersedia">
+                    <input type="submit" value="Add" name="additem-to-event-button">
                     </input>
                 </div>
             </div>
         </form>
-        <form method="POST" action="" style="margin-left: 15px;">
-            <div class="inputKodeBarangTextField">
-                {% csrf_token %}
-                <input id="terjualText" name="terjualText" type="text" placeholder="Kode barang...">
-                <div class="kodeBarangSearchButton">
-                    <input type="submit" value="Terjual">
-                    </input>
-                </div>
-            </div>
-        </form>
+
 
     </div>
 </div>
@@ -212,43 +230,26 @@
         <div class="statusHeading">Status</div>
     </div>
     <div class="scrollablePartTable" style="height: 480px;">
-        {% for event_detail in event_details %} {% if event_detail.items_status == 'Terjual' %}
-        <div class="itemTableRow" style="background-color: #06E82A;">
-            {% elif event_detail.items_status == 'Barang tersedia' %}
-            <div class="itemTableRow" style="background-color: #E1BD00;">
-                {% elif event_detail.items_status == 'Barang tidak ada' %}
-                <div class="itemTableRow" style="background-color: #FF4444;">
-                    {% else %}
-                    <div class="itemTableRow">
-                        {% endif %}
-                        <div class="itemID">{{event_detail.id}}</div>
-                        <div class="namaPakaianHeading">{{event_detail.nama}}</div>
-                        <div class="keteranganHeading">{{event_detail.keterangan}}</div>
-                        <div class="ukuranHeading">{{event_detail.ukuran}}</div>
-                        <div class="hargaHeading">{{event_detail.harga}}</div>
-                        <div class="statusHeading">{{event_detail.items_status}}</div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <div id="itemAggregation">
-                    <div class="aggregation">
-                        Total item: </div>
-                    <div class="aggregation">
-                        <div class="itemColorIndicator" style="background-color:#06E82A ;"></div>Terjual:
-                        {{terjual_count}}
-                    </div>
-                    <div class="aggregation">
-                        <div class="itemColorIndicator" style="background-color:#E1BD00 ;"></div>Tersedia:
-                        {{barang_tersedia_count}}
-                    </div>
-                    <div class="aggregation">
-                        <div class="itemColorIndicator" style="background-color:#FF4B4B ;"></div>Tidak diketahui:
-                        {{barang_tidak_ada_count}}
-                    </div>
-                </div>
-            </div>
-            <div id="backButton"><a href="/event-detail/{{event.id}}">
-                    Back
-                </a>
-            </div>
-            {% endfor %} {% endblock %}
+        {% for event_item in event_items %}
+        <div class="itemTableRow">
+            <div class="itemID">{{event_item.id}}</div>
+            <div class="namaPakaianHeading">{{event_item.nama}}</div>
+            <div class="keteranganHeading">{{event_item.keterangan}}</div>
+            <div class="ukuranHeading">{{event_item.ukuran}}</div>
+            <div class="hargaHeading">{{event_item.harga}}</div>
+            <div class="statusHeading">{{event_item.items_status}}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="footerButtons">
+    <form method="POST">
+        {%csrf_token%}
+        <div class="button cancelButton"><input type="submit" name="cancel-button" value="Cancel"></div>
+    
+        <div class="button saveButton"><input type="submit" name="save-button" value="Save"></div>
+    </form>
+
+</div>
+
+{% endfor %} {% endblock %}

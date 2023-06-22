@@ -82,6 +82,39 @@ def eventDetail(request, pk):
 
     return render(request, 'inventory_app/event-detail.html', context=context)
 
+
+def addItemsToEvent(request, pk):
+    event = Event.objects.filter(id=pk)
+    all_inventory_id = Inventory.objects.values_list('id', flat=True)
+    
+    if 'list_item' not in request.session:
+        request.session['list_item'] = []
+    
+    id_items_in_event = Inventory.objects.filter(eventitems__events=pk).values_list('id', flat=True)
+    if request.method == 'POST':
+        item_id = request.POST.get('tambah-item-textfield')
+        if request.POST.get('additem-to-event-button') and (item_id not in id_items_in_event) and (item_id in all_inventory_id):
+            # Jika id yang dimasukkan belum ada di event dan ada di inventory, maka ditambahkan ke session
+            request.session['list_item'].append(item_id)
+        elif request.POST.get('save-button'):
+            print('entering save button')
+            request.session.flush()
+            return redirect('eventDetail', pk=pk)
+        elif request.POST.get('cancel-button'):
+            print('entering cancel button')
+            request.session.flush()
+            return redirect('eventDetail', pk=pk)
+
+    event_items = Inventory.objects.filter(id__in=request.session['list_item'])
+    # session harus disave agar hasil modified tersimpan
+    request.session.modified = True
+    context = {
+        'events':event,
+        'event_items':event_items
+    }
+    return render(request, 'inventory_app/add-event-to-item.html', context=context)
+    None
+
 def stockChecking(request, pk):
     if request.method == 'POST':
         update_to_tersedia = request.POST.get('tersediaText') # refer to form dengan method POST, dan ambil entity yang memiliki ID 'tersediaText'
