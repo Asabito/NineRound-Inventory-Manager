@@ -26,18 +26,13 @@ def newEvent(request):
     # buat list barcode apabila belum ada
     if 'barcode' not in request.session:
         request.session['barcode'] = []
-    print(request.session)
-    print('---------------------------before entering items: ',request.session['barcode'])
     # apabila klik submit-button atau delete-item, maka
     if request.method == 'POST':
         form = EventForm(request.POST)
         
         if form.is_valid() and request.POST.get("additem-button"):
-            print('---------------------------current barcode: ',request.POST['barcode-input'])
-            # print('---------------------------the inven: ',Inventory.objects.values_list('id', flat=True))
             if request.POST['barcode-input'] in Inventory.objects.values_list('id', flat=True) and request.POST['barcode-input'] not in request.session['barcode']:
                 request.session['barcode'] += [request.POST['barcode-input']]
-            print('---------------------------barcode in the session after input code: ',request.session['barcode'])
         elif form.is_valid() and request.POST.get("submit-button"):
             new_event = Event(nama=request.POST['nama'],
                               lokasi= request.POST['lokasi'],
@@ -45,11 +40,6 @@ def newEvent(request):
                               tanggal_berakhir = request.POST['tanggal_berakhir']
                               )
             new_event.save()
-            print(f'''/n/n/n
-####################################
-Event.objects.latest('id'): {Event.objects.latest('id').id}
-####################################
-                  ''')
             for item in request.session['barcode']:
                 new_event_item = EventItems(events_id = Event.objects.latest('id').id,
                                             items_id = item,
@@ -61,13 +51,8 @@ Event.objects.latest('id'): {Event.objects.latest('id').id}
             # !!!!! add return to home to remove error
         elif form.is_valid() and request.POST.get("delete-button"):
             deleted_id = request.POST.getlist('items_to_delete')
-            # print(f'*************************** deleted_id = {deleted_id}')
             for i in deleted_id:
                 request.session['barcode'].remove(i)
-            print('---------------------------barcode after deleted: ',request.session['barcode'])
-    print('***************************************************************************')
-    print(f'all POST request: {request.POST}')
-    print('***************************************************************************')
     request.session.modified = True
     items = Inventory.objects.filter(id__in=request.session['barcode'])
     context = {'form':form, 'items':items}
@@ -91,17 +76,23 @@ def addItemsToEvent(request, pk):
         request.session['list_item'] = []
     
     id_items_in_event = Inventory.objects.filter(eventitems__events=pk).values_list('id', flat=True)
+    print('id_items_in_event: ',id_items_in_event)
     if request.method == 'POST':
         item_id = request.POST.get('tambah-item-textfield')
         if request.POST.get('additem-to-event-button') and (item_id not in id_items_in_event) and (item_id in all_inventory_id):
             # Jika id yang dimasukkan belum ada di event dan ada di inventory, maka ditambahkan ke session
             request.session['list_item'].append(item_id)
         elif request.POST.get('save-button'):
-            print('entering save button')
+            for i in request.session['list_item']:
+                added_items = EventItems(
+                    events_id = Event.objects.latest('id').id,
+                    items_id = i,
+                    status_in_event = 'Barang tersedia'
+                )
+                added_items.save()
             request.session.flush()
             return redirect('eventDetail', pk=pk)
         elif request.POST.get('cancel-button'):
-            print('entering cancel button')
             request.session.flush()
             return redirect('eventDetail', pk=pk)
 
