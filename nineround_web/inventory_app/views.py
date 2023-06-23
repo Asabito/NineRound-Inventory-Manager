@@ -85,7 +85,7 @@ def addItemsToEvent(request, pk):
         elif request.POST.get('save-button'):
             for i in request.session['list_item']:
                 added_items = EventItems(
-                    events_id = Event.objects.latest('id').id,
+                    events_id = pk,
                     items_id = i,
                     status_in_event = 'Barang tersedia'
                 )
