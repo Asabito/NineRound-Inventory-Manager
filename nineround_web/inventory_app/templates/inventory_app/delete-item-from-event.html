@@ -1,0 +1,255 @@
+<style>
+    /* ----------------------------------- Heading ----------------------------------- */
+
+    #heading {
+        display: inline-flex;
+        /* margin: 70px 20px 0 50px; */
+        background-color: #3A3A3A;
+        height: 70px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 13px 13px 0 0;
+
+    }
+
+    #eventDate {
+        background-color: #FF4444;
+        height: max-content;
+        margin-left: auto;
+        height: 35px;
+        width: 210px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 50px;
+        margin-top: 20px;
+    }
+
+    #subHeading {
+        display: inline-flex;
+        /* justify-content: center; */
+        align-items: center;
+        margin: 10px 20px 20px 20px;
+        /* border: 1px solid black; */
+    }
+
+    .eventInfo {
+        margin: 10px;
+    }
+
+    #subHeadingTextFields {
+        margin-left: auto;
+        margin-right: 50px;
+        display: inline-flex;
+        /* border: 1px black solid; */
+    }
+
+    .inputKodeBarangTextField {
+        /* border: 1px blue solid; */
+        margin-left: auto;
+        display: inline-flex;
+        height: 30px;
+    }
+
+    .kodeBarangSearchButton input {
+        /* align-items: center; */
+        outline: none;
+        height: 30px;
+        width: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #3A3A3A;
+        color: white;
+        border-radius: 0px 4px 4px 0px;
+        font-size: 12px;
+    }
+
+
+    .inputKodeBarangTextField>input {
+        width: 200px;
+        padding-left: 10px;
+        /* border: 1px solid black; */
+        /* border-radius: 10px 0px 0px 10px; */
+        border: 1px solid #676767;
+        border-right: 0;
+        border-radius: 4px 0 0 4px;
+    }
+
+    /* ----------------------------------- Table ----------------------------------- */
+
+    #itemStockCheckingTable {
+        /* height: 100px; */
+    }
+
+    .itemTableHeading {
+        display: inline-flex;
+        font-weight: bold;
+    }
+
+    .itemTableRow {
+        display: flex;
+        padding: 12px;
+        border-bottom: 2px solid #878787;
+    }
+
+    .itemID {
+        width: 7%;
+    }
+
+    .namaPakaianHeading {
+        width: 22%;
+    }
+
+    .keteranganHeading {
+        width: 40%;
+    }
+
+    .ukuranHeading {
+        width: 7%;
+    }
+
+    .hargaHeading {
+        width: 12%;
+    }
+
+    .statusHeading {
+        width: 15%;
+    }
+
+    #itemAggregation {
+        display: flex;
+        /* width: 500px; */
+        border: solid 2px #878787;
+        height: 35px;
+        /* border-top: 0; */
+    }
+
+    .aggregation {
+        width: 100%;
+        display: flex;
+        /* border: solid 1px black; */
+        align-items: center;
+    }
+
+    .itemColorIndicator {
+        width: 15px;
+        height: 15px;
+        margin-right: 5px;
+    }
+
+    /* ----------------------------------- Others ----------------------------------- */
+    .footerButtons {
+        display: flex;
+        justify-content: center;
+    }
+
+    .button {
+        height: 200px;
+        display: inline-flex;
+        align-items: center;
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+
+    .button input {
+        font-weight: bold;
+        border: 0;
+        outline: none;
+        font-size: 16px;
+        width: 100px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        color: white;
+    }
+
+    .deleteButton input {
+        background-color: #FF4444;
+
+    }
+
+    .cancelButton input {
+        background-color: grey;
+
+    }
+
+
+
+    a,
+    a:visited,
+    a:hover,
+    a:active {
+        color: white;
+    }
+</style>
+
+{% extends 'main.html' %} {% block content %}
+{% load static %}
+<div id="heading">
+    {% for event in events %}
+    <div>
+        <h1 style=" color: white; align-self: center;">Tarik item dari Event</h1>
+
+    </div>
+</div>
+
+<div id="subHeading">
+    <div>
+        <h3 class="eventInfo">{{event.nama}}</h3>
+        <h4 class="eventInfo">{{event.lokasi}}</h4>
+            <h4 class="eventInfo">{{event.tanggal_mulai}} - {{event.tanggal_berakhir}}</h4>
+    </div>
+
+    <div id="subHeadingTextFields">
+        <form method="POST" action="">
+            <div class="inputKodeBarangTextField">
+                {% csrf_token %}
+                <input id="tambahItem" name="tambah-item-textfield" type="text" placeholder="Kode barang...">
+                <div class="kodeBarangSearchButton">
+                    <input type="submit" value="Add" name="additem-to-event-button">
+                    </input>
+                </div>
+            </div>
+        </form>
+
+
+    </div>
+</div>
+
+<div id="itemStockCheckingTable">
+    <div class="itemTableHeading itemTableRow">
+        <div class="itemID">ID Item</div>
+        <div class="namaPakaianHeading">Nama Pakaian</div>
+        <div class="keteranganHeading">Keterangan</div>
+        <div class="ukuranHeading">Ukuran</div>
+        <div class="hargaHeading">Harga</div>
+        <div class="statusHeading">Status</div>
+    </div>
+    <div class="scrollablePartTable" style="height: 480px;">
+        {% for event_item in event_items %}
+        <div class="itemTableRow">
+            <div class="itemID">{{event_item.id}}</div>
+            <div class="namaPakaianHeading">{{event_item.nama}}</div>
+            <div class="keteranganHeading">{{event_item.keterangan}}</div>
+            <div class="ukuranHeading">{{event_item.ukuran}}</div>
+            <div class="hargaHeading">{{event_item.harga}}</div>
+            <div class="statusHeading">{{event_item.items_status}}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<div class="footerButtons">
+    <form method="POST">
+        {%csrf_token%}
+        <div class="button cancelButton"><input type="submit" name="cancel-button" value="Cancel"></div>
+    
+        <div class="button deleteButton"><input type="submit" name="delete-button" value="Delete"></div>
+    </form>
+
+</div>
+
+{% endfor %} {% endblock %}

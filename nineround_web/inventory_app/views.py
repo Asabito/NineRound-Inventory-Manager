@@ -69,6 +69,7 @@ def eventDetail(request, pk):
 
 
 def addItemsToEvent(request, pk):
+    # additional note: addItemsToEvent dan deleteItemsFromEvent bisa dibuatkan decoratornya agar lebih hemat penulisan
     event = Event.objects.filter(id=pk)
     all_inventory_id = Inventory.objects.values_list('id', flat=True)
     
@@ -103,7 +104,45 @@ def addItemsToEvent(request, pk):
         'events':event,
         'event_items':event_items
     }
-    return render(request, 'inventory_app/add-event-to-item.html', context=context)
+    return render(request, 'inventory_app/add-item-to-event.html', context=context)
+    None
+
+def deleteItemsFromEvent(request, pk):
+    event = Event.objects.filter(id=pk)
+    all_inventory_id = Inventory.objects.values_list('id', flat=True)
+    
+    if 'list_item' not in request.session:
+        request.session['list_item'] = []
+    
+    id_items_in_event = Inventory.objects.filter(eventitems__events=pk).values_list('id', flat=True)
+    print('id_items_in_event: ',id_items_in_event)
+    if request.method == 'POST':
+        item_id = request.POST.get('tambah-item-textfield')
+        if request.POST.get('additem-to-event-button') and (item_id in id_items_in_event) and (item_id in all_inventory_id):
+            # Jika id yang dimasukkan belum ada di event dan ada di inventory, maka ditambahkan ke session
+            request.session['list_item'].append(item_id)
+        elif request.POST.get('delete-button'):
+            event_items = EventItems.objects.filter(events_id=pk, items_id__in=request.session['list_item'])
+            print('{:^40}'.format(''))
+            print('ids: ',request.session['list_item'])
+            print('Event items before delete: ',event_items)
+            event_items.delete()
+            print('Event items after delete: ',event_items)
+            print('{:^40}'.format(''))
+            request.session.flush()
+            return redirect('eventDetail', pk=pk)
+        elif request.POST.get('cancel-button'):
+            request.session.flush()
+            return redirect('eventDetail', pk=pk)
+
+    event_items = Inventory.objects.filter(id__in=request.session['list_item'])
+    # session harus disave agar hasil modified tersimpan
+    request.session.modified = True
+    context = {
+        'events':event,
+        'event_items':event_items
+    }
+    return render(request, 'inventory_app/delete-item-from-event.html', context=context)
     None
 
 def stockChecking(request, pk):
