@@ -15,7 +15,6 @@ def events(request):
         Q(status__icontains=q)
     )
     context = {'events': events}
-    print('context ===== ',context)
 
     return render(request, 'inventory_app/event.html', context=context)
     # return HttpResponse('Home Page')
@@ -49,12 +48,16 @@ def newEvent(request):
             request.session.flush()
             return redirect('events')
             # !!!!! add return to home to remove error
+        elif request.POST.get('cancel-button'):
+            if request.session['barcode']:
+                request.session.flush()
+            return redirect('events')
         elif form.is_valid() and request.POST.get("delete-button"):
             deleted_id = request.POST.getlist('items_to_delete')
             for i in deleted_id:
                 request.session['barcode'].remove(i)
     request.session.modified = True
-    items = Inventory.objects.filter(id__in=request.session['barcode'])
+    items = Inventory.objects.filter(id__in=request.session['barcode']).order_by('id')
     context = {'form':form, 'items':items}
     return render(request, 'inventory_app/new-event.html', context=context)
 
@@ -63,7 +66,6 @@ def eventDetail(request, pk):
     event_details = Inventory.objects.filter(eventitems__events=pk) # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
     events = Event.objects.filter(id=pk)
     context = {'event_details':event_details, 'events':events}
-    # print('context ===== ',context)
 
     return render(request, 'inventory_app/event-detail.html', context=context)
 

@@ -135,8 +135,9 @@
 
     /* ----------------------------------- Bottom ----------------------------------- */
 
-    #submitButtonDiv {
+    #buttonDiv {
         display: flex;
+        flex-direction: row-reverse;
         align-items: center;
         justify-content: center;
         height: 100px;
@@ -144,14 +145,21 @@
         margin: 20px 20px 0 0;
     }
 
-    #submitButtonDiv input {
+    #buttonDiv input {
         height: 35px;
         width: 70px;
         outline: none;
         color: white;
         border: 0;
         border-radius: 4px 4px 4px 4px;
+        margin: 0 20px 0 20px;
+        font-size: 15px;
+    }
+    #submitBtn{
         background-color: #4478FF;
+    }
+    #cancelBtn{
+        background-color: silver;
     }
 </style>
 
@@ -205,17 +213,21 @@
                 {% endfor %}
             </div>
         </div>
-        <div id="submitButtonDiv">
-            <input type="submit" value="Submit" name="submit-button">
+        <div id="buttonDiv">
+            <input id="submitBtn" type="submit" value="Submit" name="submit-button">
+        </form>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <input id="cancelBtn" type="submit" value="Cancel" name="cancel-button">
+        </form>
         </div>
     </div>
-
-</form>
+    
 <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
 <script>
     $(document).ready(function () {
         $('#deleteItemButton').click(function () {
-            if (confirm("Are you sure want to delete this?")) {
+            if (confirm("Are you sure want to delete this?") == true) {
                 var id = [];
                 var csrf = $('input[name=csrfmiddlewaretoken').val();
                 $(':checkbox:checked').each(function (i) {
@@ -223,7 +235,8 @@
                 })
                 if (id.length === 0) {
                     alert("Please select item to delete.")
-                } else {
+                } 
+                else {
                     console.log(id)
                     $.ajax({
                         url: ".",
@@ -235,6 +248,9 @@
                         }
                     })
                 }
+            }
+            else {
+                return false;
             }
         });
 
