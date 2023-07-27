@@ -117,6 +117,7 @@ def addItemsToEvent(request, pk):
     return render(request, 'inventory_app/add-item-to-event.html', context=context)
     None
 
+
 def deleteItemsFromEvent(request, pk):
     event = Event.objects.filter(id=pk)
     all_inventory_id = Inventory.objects.values_list('id', flat=True)
@@ -154,6 +155,7 @@ def deleteItemsFromEvent(request, pk):
     }
     return render(request, 'inventory_app/delete-item-from-event.html', context=context)
     None
+
 
 def stockChecking(request, pk):
     if request.method == 'POST':
@@ -196,19 +198,71 @@ def inventoryPage(request):
     return render(request, 'inventory_app/inventory.html', context=context)
 
 
-
-
 def inventoryAddItem(request):
+    # raw form
     form = InventoryForm()
-    # print('form: ',form)
-    items = Inventory.objects.all()
-    context={'items':items}
-    if request.method =='POST':
-        form = Inventory(request.POST)
-    if request.method == 'POST' and request.POST.get('add-button'):
-        return redirect('inventoryAddItem')
-    elif request.method == 'POST' and request.POST.get('delete-button'):
-        pass
 
-    context = {'form':form, 'items':items}
+    # raise error apabila id duplicate
+    raise_warning = False
+
+    # add to session
+    if "temp_inven" not in request.session:
+        request.session["temp_inven"] = [] 
+
+    # add button  
+    if request.method =='POST' and request.POST.get("add-item-button") :
+        current_id = request.POST["id"]
+
+        # cek apakah ID yang dimasukkan sudah ada di SESSION atau belum
+        for d in request.session["temp_inven"]:
+            print(d['item_id'] == current_id)
+            print('current id =', current_id)
+            print('session id =',d['item_id'])
+            if d['item_id'] == current_id:
+                raise_warning = True
+                break
+
+        # cek apakah ID yang dimasukkan sudah ada di DATABASE atau belum
+        if current_id in Inventory.objects.values_list('id', flat=True) :
+            raise_warning = True
+        
+        # validasi form dengan input
+        form = InventoryForm(request.POST)
+        # apabila ID belum digunakan, dan form valid maka tambahkan input ke session
+        if form.is_valid() and raise_warning == False:
+            request.session["temp_inven"].append({
+                'item_id' : current_id,
+                'item_nama' : request.POST["nama"],
+                'item_keterangan' : request.POST["keterangan"],
+                'item_ukuran' : request.POST["ukuran"],
+                'item_harga' : request.POST["harga"],
+            })
+            # save session
+            request.session.modified = True
+
+            return redirect('inventoryAddItem')
+
+    # submit button
+    if request.method == 'POST' and request.POST.get('submit-button'):
+        print('here')
+        # request.session.flush()
+        for x in request.session["temp_inven"]:
+            new_item = Inventory(
+                                 id = x['item_id'],
+                                 nama = x['item_nama'],
+                                 keterangan = x['item_keterangan'],
+                                 ukuran = x['item_ukuran'],
+                                 harga = x['item_harga']
+                                )
+            new_item.save()
+            request.session.flush()
+        return redirect('inventoryPage')
+    
+    # cancel button
+    elif request.method == 'POST' and request.POST.get('cancel-button'):
+        request.session.flush()
+        return redirect('inventoryPage')
+    # items = Inventory.objects.all()
+
+    context = {'form':form, 'items':request.session["temp_inven"], 'raise_warning':raise_warning}
     return render(request, 'inventory_app/inventory-add-item.html', context=context)
