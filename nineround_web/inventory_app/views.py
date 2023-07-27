@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Event, Inventory, EventItems # import models
 from django.db.models import Q, F
-from .forms import EventForm
+from .forms import EventForm, InventoryForm
 
 
 # Create your views here.
@@ -15,6 +15,14 @@ def events(request):
         Q(status__icontains=q)
     )
     context = {'events': events}
+    if request.method == 'POST' and request.POST.get("delete-event-button"):
+        events_id_to_delete = request.POST.getlist("events_to_delete")
+        events_to_delete = Event.objects.filter(id__in=events_id_to_delete)
+        print('Events to be deleted: ',events_to_delete)
+        events_to_delete.delete()
+        # return None
+    elif request.method == 'POST' and request.POST.get("new-event-button"):
+        return redirect('new-event')
 
     return render(request, 'inventory_app/event.html', context=context)
     # return HttpResponse('Home Page')
@@ -64,8 +72,8 @@ def newEvent(request):
 
 def eventDetail(request, pk):
     event_details = Inventory.objects.filter(eventitems__events=pk) # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
-    events = Event.objects.filter(id=pk)
-    context = {'event_details':event_details, 'events':events}
+    event = Event.objects.filter(id=pk)
+    context = {'event_details':event_details, 'event':event}
 
     return render(request, 'inventory_app/event-detail.html', context=context)
 
@@ -174,3 +182,33 @@ def stockChecking(request, pk):
                'barang_tidak_ada_count':barang_tidak_ada_count,
                }
     return render(request, 'inventory_app/stock-checking.html', context=context)
+
+
+def inventoryPage(request):
+    items = Inventory.objects.all()
+    if request.method == 'POST' and request.POST.get('add-button'):
+        return redirect('inventoryAddItem')
+    elif request.method == 'POST' and request.POST.get('delete-button'):
+        pass
+
+    context = {'items':items}
+
+    return render(request, 'inventory_app/inventory.html', context=context)
+
+
+
+
+def inventoryAddItem(request):
+    form = InventoryForm()
+    # print('form: ',form)
+    items = Inventory.objects.all()
+    context={'items':items}
+    if request.method =='POST':
+        form = Inventory(request.POST)
+    if request.method == 'POST' and request.POST.get('add-button'):
+        return redirect('inventoryAddItem')
+    elif request.method == 'POST' and request.POST.get('delete-button'):
+        pass
+
+    context = {'form':form, 'items':items}
+    return render(request, 'inventory_app/inventory-add-item.html', context=context)

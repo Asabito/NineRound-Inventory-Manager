@@ -1,5 +1,5 @@
-from django.forms import ModelForm, TextInput, DateInput, Textarea
-from .models import Event
+from django.forms import ModelForm, TextInput, DateInput, Textarea, ChoiceField, NumberInput, Select
+from .models import Event, Inventory
 
 class EventForm(ModelForm):
     # error_css_class = 'error'
@@ -24,4 +24,16 @@ class EventForm(ModelForm):
               }),
         }
     
-        
+class InventoryForm(ModelForm):
+    class Meta:
+        model = Inventory
+        fields = ('id', 'nama', 'keterangan', 'ukuran', 'harga')
+        widgets = {
+            'id': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'id item...'}),
+            'nama': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'nama item...'}),
+            'keterangan': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'keterangan item...'}),
+            'ukuran': Select(),
+            # 'ukuran': ChoiceField(attrs={'class':'inventoryFormTextfield', 'placeholder':'keterangan item...'}),
+            'harga': NumberInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'keterangan item...'}),
+        }
+    

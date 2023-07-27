@@ -1,0 +1,25 @@
+<style>
+    #heading{
+        display: inline-flex;
+        margin: 30px 20px 20px 30px;
+    }
+</style>
+
+{% extends 'main.html' %}
+{% block content %}
+
+<div id="heading">
+    <h1>Add item to inventory</h1>
+</div>
+
+<form id="inventoryFormTextfields" method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+        {{field}}
+    {% endfor %}
+
+</form>
+<div>asdasio    </div>
+
+
+{% endblock %}
