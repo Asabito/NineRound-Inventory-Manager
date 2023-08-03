@@ -189,6 +189,7 @@
 
 {% extends 'main.html' %} {% block content %}
 {% load static %}
+{% load humanize %}
 <div id="heading">
     {% for event in events %}
     <div>
@@ -236,7 +237,7 @@
             <div class="namaPakaianHeading">{{event_item.nama}}</div>
             <div class="keteranganHeading">{{event_item.keterangan}}</div>
             <div class="ukuranHeading">{{event_item.ukuran}}</div>
-            <div class="hargaHeading">{{event_item.harga}}</div>
+            <div class="hargaHeading">Rp {{event_item.harga | floatformat | intcomma}}</div>
             <div class="statusHeading">{{event_item.items_status}}</div>
         </div>
         {% endfor %}

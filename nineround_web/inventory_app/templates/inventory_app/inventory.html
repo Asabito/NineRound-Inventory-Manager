@@ -65,6 +65,8 @@
 
 {% extends 'main.html' %}
 {% block content %}
+
+{% load humanize %}
 <div id="heading">
     <h1>All items in inventory</h1>
     <div id="manipulateButton">
@@ -90,7 +92,7 @@
             <div class="namaPakaianColumn">{{item.nama}}</div>
             <div class="keteranganColumn">{{item.keterangan}}</div>
             <div class="ukuranColumn">{{item.ukuran}}</div>
-            <div class="hargaColumn">{{item.harga}}</div>
+            <div class="hargaColumn">Rp {{item.harga | floatformat | intcomma}}</div>
         </div>
         {% endfor %}
     </div>

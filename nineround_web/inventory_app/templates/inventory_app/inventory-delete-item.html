@@ -3,13 +3,12 @@
         display: inline-flex;
         margin: 30px 20px 20px 30px;
     }
-    .labelAndFields{
-        display: flex;
-    }
     .inputRow{
         display: inline-flex;
         margin: 0 20px 20px 30px;
-
+    }
+    .inputRow input{
+        margin-right: 10px;
     }
     .inputLabels{
         font-weight: bold;
@@ -22,6 +21,15 @@
         flex-direction: column;
 
         align-items: start;
+    }
+
+    #searchField{
+        padding: 8px;
+        border: 0px solid black;
+        border-radius: 5px;
+        height: 30px;
+        background-color: #F2F2F2;
+        color: #505050;
     }
     .inventoryFormTextfield{
         padding: 8px;
@@ -119,14 +127,14 @@
     }
     #bottomButtons input {
         height: 35px;
-        width: 70px;
+        width: 80px;
         color: white;
         border-radius: 4px 4px 4px 4px;
         margin: 0 20px 0 20px;
         font-size: 15px;
     }
     #submit-button{
-        background-color: #4478FF;
+        background-color: red;
     }
     #cancel-button{
         background-color: silver;
@@ -143,24 +151,14 @@
 {% load humanize %}
 
 <div id="heading">
-    <h1>Add item to inventory</h1>
+    <h1>Delete item from inventory</h1>
 </div>
 
-<form id="inventoryFormTextfields" method="POST">
+<form id="searchIdFromInventory" method="POST">
     {% csrf_token %}
     <div class="inputRow">
-    {% for field in form %}
-        <div class="labelAndFields">
-            <label class="inputLabels" for="">{{field.label}}</label>
-            {{field}}
-        </div>
-        {% if forloop.last %}
-        <div class="labelAndFields">
-            <br>
+            <input id="searchField" type="text" name="search-id" placeholder="ID...">
             <input id="add-item-button" type="submit" name="add-item-button" value="Add item">
-        </div>
-        {% endif %}
-        {% endfor %}
     </div>
     <div id="id_warning_message">        
         {% if raise_warning %}
@@ -171,11 +169,10 @@
 
     <div id="listHeading">
         <h2>List items</h2>
-        <input type="submit" name="delete-item" name="delete-item-button" value="Delete items">
+        <!-- <input type="submit" name="delete-item" name="delete-item-button" value="Cancel items"> -->
     </div>
     <div id="itemTable">
         <div class="itemTableHeading itemTableRow">
-            <div class="checkBoxCol"><input class="checkAll" type="checkbox"></div>
             <div class="tableNumber">No.</div>
             <div class="itemID">ID</div>
             <div class="namaPakaian">Nama Pakaian</div>
@@ -184,16 +181,14 @@
             <div class="hargaPakaian">Harga</div>
         </div>
         <div class="scrollablePartTable" style="height:400px;">
-            {% for item in items %}
+            {% for item in items_to_be_deleted %}
             <div class="itemTableRow">
-                <div class="checkBoxCol"><input class="checkboxes" type="checkbox" name="items_to_delete"
-                        value="{{item.id}}" id="delete_product"></div>
                 <div class="tableNumber">{{forloop.counter}}</div>
-                <div class="itemID">{{item.item_id}}</div>
-                <div class="namaPakaian">{{item.item_nama}} </div>
-                <div class="keteranganPakaian">{{item.item_keterangan}}</div>
-                <div class="ukuranPakaian">{{item.item_ukuran}}</div>
-                <div class="hargaPakaian">Rp {{item.item_harga | floatformat | intcomma}}</div>
+                <div class="itemID">{{item.id}}</div>
+                <div class="namaPakaian">{{item.nama}} </div>
+                <div class="keteranganPakaian">{{item.keterangan}}</div>
+                <div class="ukuranPakaian">{{item.ukuran}}</div>
+                <div class="hargaPakaian">Rp {{item.harga | floatformat | intcomma}}</div>
             </div>
             {% endfor %}
         </div>
@@ -201,7 +196,7 @@
 
     <form method="POST">
     <div id="bottomButtons">
-        <input type="submit" name="submit-button" value="Submit" id="submit-button">
+        <input type="submit" name="submit-button" value="Delete" id="submit-button">
 
             {% csrf_token %}
             <input type="submit" name="cancel-button" value="Cancel" id="cancel-button">

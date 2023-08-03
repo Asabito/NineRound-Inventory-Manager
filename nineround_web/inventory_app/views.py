@@ -71,7 +71,7 @@ def newEvent(request):
 
 
 def eventDetail(request, pk):
-    event_details = Inventory.objects.filter(eventitems__events=pk) # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
+    event_details = Inventory.objects.filter(eventitems__events=pk).order_by('id') # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
     event = Event.objects.filter(id=pk)
     context = {'event_details':event_details, 'event':event}
 
@@ -154,7 +154,6 @@ def deleteItemsFromEvent(request, pk):
         'event_items':event_items
     }
     return render(request, 'inventory_app/delete-item-from-event.html', context=context)
-    None
 
 
 def stockChecking(request, pk):
@@ -187,11 +186,12 @@ def stockChecking(request, pk):
 
 
 def inventoryPage(request):
-    items = Inventory.objects.all()
+    items = Inventory.objects.all().order_by('id')
+    print(items[0])
     if request.method == 'POST' and request.POST.get('add-button'):
         return redirect('inventoryAddItem')
     elif request.method == 'POST' and request.POST.get('delete-button'):
-        pass
+        return redirect('inventoryDeleteItem')
 
     context = {'items':items}
 
@@ -266,3 +266,33 @@ def inventoryAddItem(request):
 
     context = {'form':form, 'items':request.session["temp_inven"], 'raise_warning':raise_warning}
     return render(request, 'inventory_app/inventory-add-item.html', context=context)
+
+
+def inventoryDeleteItem(request):
+    # buat session apabila belum ada
+    if 'temp_item_list_to_be_deleted_from_inventory' not in request.session:
+        request.session['temp_item_list_to_be_deleted_from_inventory'] = []
+
+    # apabila add item ditekan
+    if request.method == 'POST' and request.POST.get('add-item-button'):
+        current_id = request.POST.get('search-id')
+        if current_id not in request.session['temp_item_list_to_be_deleted_from_inventory']:
+            request.session['temp_item_list_to_be_deleted_from_inventory'].append(current_id)
+
+    # show item yang dimasukkan melalui add item
+    items_to_be_deleted = Inventory.objects.filter(id__in=request.session['temp_item_list_to_be_deleted_from_inventory']).order_by('id')
+    
+    if request.method == 'POST' and request.POST.get('submit-button'):
+        items_to_be_deleted.delete()
+        request.session.flush()
+        return redirect('inventoryPage')
+    elif request.method == 'POST' and request.POST.get('cancel-button'):
+        request.session.flush()
+        return redirect('inventoryPage')
+
+    # save session modification
+    request.session.modified = True
+
+
+    context = {'items_to_be_deleted': items_to_be_deleted}
+    return render(request, 'inventory_app/inventory-delete-item.html', context=context)

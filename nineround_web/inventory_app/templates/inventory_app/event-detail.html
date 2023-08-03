@@ -63,10 +63,14 @@
         border-bottom: 2px solid #878787;
         padding: 12px;
     }
+
+    .idPakaian{
+        /* padding-left: 10px; */
+        width: 6%;
+    }
     
     .namaPakaianHeading {
-        padding-left: 10px;
-        width: 30%;
+        width: 28%;
     }
     
     .keteranganHeading {
@@ -78,7 +82,7 @@
     }
     
     .hargaHeading {
-        width: 5%;
+        width: 10%;
     }
     /* ----------------------------------- Footer button ----------------------------------- */
     
@@ -104,6 +108,7 @@
 </style>
 
 {% extends 'main.html' %} {% block content %}
+{% load humanize %}
 <div id="heading">
     {% for e in event %}
     <div>
@@ -121,6 +126,7 @@
 </div>
 <div id="itemTable">
     <div class="itemTableHeading itemTableRow">
+        <div class="idPakaian">ID</div>
         <div class="namaPakaianHeading">Nama Pakaian</div>
         <div class="keteranganHeading">Keterangan</div>
         <div class="ukuranHeading">Ukuran</div>
@@ -129,10 +135,11 @@
     <div class="scrollablePartTable" style="height:450px;">
         {% for event_detail in event_details %}
         <div class="itemTableRow">
+            <div class="idPakaian">{{event_detail.id}}</div>
             <div class="namaPakaianHeading">{{event_detail.nama}}</div>
             <div class="keteranganHeading">{{event_detail.keterangan}}</div>
             <div class="ukuranHeading">{{event_detail.ukuran}}</div>
-            <div class="hargaHeading">{{event_detail.harga}}</div>
+            <div class="hargaHeading">Rp {{event_detail.harga | floatformat | intcomma}}</div>
         </div>
         {% endfor %}
     </div>
