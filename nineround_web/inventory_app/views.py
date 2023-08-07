@@ -321,7 +321,7 @@ def inventoryDeleteItem(request):
 
 
 # TODO:
-# - kasih validasi setiap kali delete
+# - DONE -  kasih validasi setiap kali delete
 # - barcode
 # - ubah status tidak diketahui manjadi ... (brainstorming lg)
 # - ubah database menjadi: ketika user memasukkan item ke sebuah event, di event lainnya akan terhapus. Dan status akan berubah menjadi dalam event
