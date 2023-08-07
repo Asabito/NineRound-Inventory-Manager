@@ -8,12 +8,12 @@ from .forms import EventForm, InventoryForm
 # Create your views here.
 def events(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
-    events = Event.objects.all()
+    events = Event.objects.all().order_by('timestamp')
     events = Event.objects.filter(
         Q(nama__icontains=q) |
         Q(lokasi__icontains=q) |
         Q(status__icontains=q)
-    )
+    ).order_by('timestamp')
     context = {'events': events}
     if request.method == 'POST' and request.POST.get("delete-event-button"):
         events_id_to_delete = request.POST.getlist("events_to_delete")
@@ -242,9 +242,30 @@ def inventoryAddItem(request):
 
             return redirect('inventoryAddItem')
 
+    # delete button
+    if request.method == 'POST' and request.POST.get('delete-item-button'):
+        to_be_deleted_items = request.POST.getlist('items_to_delete')
+        print(to_be_deleted_items)
+        ids_in_temp_inven = [x["item_id"] for x in request.session['temp_inven']]
+        print(ids_in_temp_inven)
+        del_index = []
+        for item in to_be_deleted_items:
+            del_index.append(ids_in_temp_inven.index(item))
+
+        print('del_index: ',del_index)
+        del_index.sort(reverse=True)
+        for d_i in del_index:
+            del request.session["temp_inven"][d_i]
+        print('del_index: ',del_index)
+        
+        request.session.save()
+                
+        # for item in request.session['temp_inven']:
+        #     if item['item_id'] in deleted_items:
+
+
     # submit button
-    if request.method == 'POST' and request.POST.get('submit-button'):
-        print('here')
+    elif request.method == 'POST' and request.POST.get('submit-button'):
         # request.session.flush()
         for x in request.session["temp_inven"]:
             new_item = Inventory(
@@ -296,3 +317,11 @@ def inventoryDeleteItem(request):
 
     context = {'items_to_be_deleted': items_to_be_deleted}
     return render(request, 'inventory_app/inventory-delete-item.html', context=context)
+
+
+
+# TODO:
+# - kasih validasi setiap kali delete
+# - barcode
+# - ubah status tidak diketahui manjadi ... (brainstorming lg)
+# - ubah database menjadi: ketika user memasukkan item ke sebuah event, di event lainnya akan terhapus. Dan status akan berubah menjadi dalam event

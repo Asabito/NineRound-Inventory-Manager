@@ -1,20 +1,24 @@
 <style>
-    #heading{
+    #heading {
         display: inline-flex;
         margin: 30px 20px 20px 30px;
     }
-    .labelAndFields{
+
+    .labelAndFields {
         display: flex;
     }
-    .inputRow{
+
+    .inputRow {
         display: inline-flex;
         margin: 0 20px 20px 30px;
 
     }
-    .inputLabels{
+
+    .inputLabels {
         font-weight: bold;
     }
-    .labelAndFields{
+
+    .labelAndFields {
         /* flex-grow: 1; */
         margin: 0 40px 0 0;
         /* border: 1px solid black; */
@@ -23,7 +27,8 @@
 
         align-items: start;
     }
-    .inventoryFormTextfield{
+
+    .inventoryFormTextfield {
         padding: 8px;
         border: 0px solid black;
         border-radius: 5px;
@@ -31,7 +36,8 @@
         background-color: #F2F2F2;
         color: #505050;
     }
-    #add-item-button{
+
+    #add-item-button {
         width: 70px;
         border-radius: 4px;
         height: 30px;
@@ -39,17 +45,20 @@
         color: white;
 
     }
-    #id_warning_message{
+
+    #id_warning_message {
         margin: 0 0 0 30px;
         color: red;
     }
+
     /* ----------------------------------- List heading ----------------------------------- */
-    #listHeading{
+    #listHeading {
         margin: 30px 30px 5px 30px;
         /* border: 1px solid black; */
         display: flex;
     }
-    #listHeading input{
+
+    #listHeading input {
         margin-left: auto;
         height: 30px;
         width: 90px;
@@ -62,51 +71,53 @@
         border-radius: 4px 4px 4px 4px;
         font-size: 13px;
     }
+
     /* ----------------------------------- Table ----------------------------------- */
     #itemTable {
-            /* margin: 20px 20px 0 10px; */
+        /* margin: 20px 20px 0 10px; */
         margin: 5px 30px 20px 30px;
 
-            height: fit-content;
-        }
+        height: fit-content;
+    }
 
-        .itemTableHeading {
-            font-weight: bold;
-        }
+    .itemTableHeading {
+        font-weight: bold;
+    }
 
-        .itemTableRow {
-            display: flex;
-            border-bottom: 2px solid #878787;
-            padding: 12px;
-        }
+    .itemTableRow {
+        display: flex;
+        border-bottom: 2px solid #878787;
+        padding: 12px;
+    }
 
-        .checkBoxCol {
-            width: 2%;
-        }
+    .checkBoxCol {
+        width: 2%;
+    }
 
-        .tableNumber {
-            width: 3%;
-        }
+    .tableNumber {
+        width: 3%;
+    }
 
-        .itemID {
-            width: 7%;
-        }
+    .itemID {
+        width: 7%;
+    }
 
-        .namaPakaian {
-            width: 30%;
-        }
+    .namaPakaian {
+        width: 30%;
+    }
 
-        .keteranganPakaian {
-            width: 45%;
-        }
+    .keteranganPakaian {
+        width: 45%;
+    }
 
-        .ukuranPakaian {
-            width: 7%;
-        }
+    .ukuranPakaian {
+        width: 7%;
+    }
 
-        .hargaPakaian {
-            width: 7%;
-        }
+    .hargaPakaian {
+        width: 7%;
+    }
+
     /* ----------------------------------- Bottom ----------------------------------- */
     #bottomButtons {
         display: flex;
@@ -117,6 +128,7 @@
         /* border: 1px solid black; */
         margin: 20px 20px 0 0;
     }
+
     #bottomButtons input {
         height: 35px;
         width: 70px;
@@ -125,14 +137,17 @@
         margin: 0 20px 0 20px;
         font-size: 15px;
     }
-    #submit-button{
+
+    #submit-button {
         background-color: #4478FF;
     }
-    #cancel-button{
+
+    #cancel-button {
         background-color: silver;
     }
+
     /* ----------------------------------- Others ----------------------------------- */
-    input[type=submit]{
+    input[type=submit] {
         outline: none;
         border: 0;
     }
@@ -149,7 +164,7 @@
 <form id="inventoryFormTextfields" method="POST">
     {% csrf_token %}
     <div class="inputRow">
-    {% for field in form %}
+        {% for field in form %}
         <div class="labelAndFields">
             <label class="inputLabels" for="">{{field.label}}</label>
             {{field}}
@@ -162,16 +177,17 @@
         {% endif %}
         {% endfor %}
     </div>
-    <div id="id_warning_message">        
+    <div id="id_warning_message">
         {% if raise_warning %}
         ID telah terpakai, gunakan ID lainnya.
         {% endif %}
     </div>
 </form>
-
+<form method="POST">
+    {% csrf_token %}
     <div id="listHeading">
         <h2>List items</h2>
-        <input type="submit" name="delete-item" name="delete-item-button" value="Delete items">
+        <input type="submit" id="deleteItemButton" name="delete-item-button" value="Delete items">
     </div>
     <div id="itemTable">
         <div class="itemTableHeading itemTableRow">
@@ -187,7 +203,7 @@
             {% for item in items %}
             <div class="itemTableRow">
                 <div class="checkBoxCol"><input class="checkboxes" type="checkbox" name="items_to_delete"
-                        value="{{item.id}}" id="delete_product"></div>
+                        value="{{item.item_id}}" id="delete_product"></div>
                 <div class="tableNumber">{{forloop.counter}}</div>
                 <div class="itemID">{{item.item_id}}</div>
                 <div class="namaPakaian">{{item.item_nama}} </div>
@@ -198,15 +214,58 @@
             {% endfor %}
         </div>
     </div>
-
-    <form method="POST">
+</form>
+<form method="POST">
     <div id="bottomButtons">
         <input type="submit" name="submit-button" value="Submit" id="submit-button">
 
-            {% csrf_token %}
-            <input type="submit" name="cancel-button" value="Cancel" id="cancel-button">
-        </form>
-    </div>
+        {% csrf_token %}
+        <input type="submit" name="cancel-button" value="Cancel" id="cancel-button">
+</form>
+</div>
 
 
+
+<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#deleteItemButton').click(function () {
+            if (confirm("Are you sure want to delete this?") == true) {
+                var id = [];
+                var csrf = $('input[name=csrfmiddlewaretoken').val();
+                $(':checkbox:checked').each(function (i) {
+                    id[i] = $(this).val()
+                })
+                if (id.length === 0) {
+                    alert("Please select item to delete.")
+                }
+                else {
+                    console.log(id)
+                    $.ajax({
+                        url: ".",
+                        method: "POST",
+                        data:
+                        {
+                            id,
+                            csrfmiddlewaretoken: csrf
+                        }
+                    })
+                }
+            }
+            else {
+                return false;
+            }
+        });
+
+        $(function () {
+            $('.checkAll').click(function () {
+                if (this.checked) {
+                    $(".checkboxes").prop("checked", true);
+                } else {
+                    $(".checkboxes").prop("checked", false);
+                }
+            });
+        });
+    })
+</script>
 {% endblock %}
