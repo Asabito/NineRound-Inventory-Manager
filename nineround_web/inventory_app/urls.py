@@ -10,5 +10,6 @@ urlpatterns = [
     path('event-detail/<str:pk>/stock-checking', views.stockChecking, name='stockChecking'),
     path('inventory', views.inventoryPage, name='inventoryPage'),
     path('add-item-to-inventory', views.inventoryAddItem, name='inventoryAddItem'),
-    path('delete-item-from-inventory', views.inventoryDeleteItem, name='inventoryDeleteItem')
+    path('delete-item-from-inventory', views.inventoryDeleteItem, name='inventoryDeleteItem'),
+    path('barcode', views.barcodeGenerator, name='barcode'),
 ]

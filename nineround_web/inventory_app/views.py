@@ -187,7 +187,6 @@ def stockChecking(request, pk):
 
 def inventoryPage(request):
     items = Inventory.objects.all().order_by('id')
-    print(items[0])
     if request.method == 'POST' and request.POST.get('add-button'):
         return redirect('inventoryAddItem')
     elif request.method == 'POST' and request.POST.get('delete-button'):
@@ -319,9 +318,16 @@ def inventoryDeleteItem(request):
     return render(request, 'inventory_app/inventory-delete-item.html', context=context)
 
 
+def barcodeGenerator(request):
+    item = Inventory.objects.all().order_by('id')
+    context = {'items':item}
+    if request.POST.getlist('selected_items'):
+        print(request.POST.getlist('selected_items'))
+    return render(request, 'inventory_app/barcode.html', context=context)
+
 
 # TODO:
-# - DONE -  kasih validasi setiap kali delete
+# - DONE -  kasih validasi setiap kali delete (Tarik item dari Event belom)
 # - barcode
 # - ubah status tidak diketahui manjadi ... (brainstorming lg)
 # - ubah database menjadi: ketika user memasukkan item ke sebuah event, di event lainnya akan terhapus. Dan status akan berubah menjadi dalam event
