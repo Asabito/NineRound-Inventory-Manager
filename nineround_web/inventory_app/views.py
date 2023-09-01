@@ -4,6 +4,25 @@ from .models import Event, Inventory, EventItems # import models
 from django.db.models import Q, F
 from .forms import EventForm, InventoryForm
 
+# barcode
+import barcode
+from barcode.writer import ImageWriter
+import PIL
+from PIL import Image
+from django.core.files.temp import NamedTemporaryFile
+from django.core import files
+from io import BytesIO
+
+# docx
+from docx import Document
+from docx.shared import Mm
+from docx.enum.section import WD_ORIENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.text import WD_BREAK
+import os, shutil
+from docx.shared import Pt
+PATH = os.path.dirname(os.path.abspath(__file__))
+
 
 # Create your views here.
 def events(request):
@@ -322,10 +341,84 @@ def barcodeGenerator(request):
     item = Inventory.objects.all().order_by('id')
     context = {'items':item}
     if request.POST.getlist('selected_items'):
-        print(request.POST.getlist('selected_items'))
+        # generate barcode images
+        barcodeImageGenerator(request.POST.getlist('selected_items'))
+        # put barcode images to the docx
+        barcodeDocxGenerator()
+    
+    # delete all barcode png in temp folder
+    folder = '../nineround_web/inventory_app/temp/'
+    for filename in os.listdir(folder):
+        file_path = os.path.join(folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+        
     return render(request, 'inventory_app/barcode.html', context=context)
 
+def barcodeImageGenerator(list_of_id):
+    """
+    This function generates barcode image for each selected IDs
+    """
+    bar_class = barcode.get_barcode_class('code128')
+    writer=ImageWriter()
 
+    for identifier in list_of_id:
+        code128 = bar_class(identifier, writer)
+        code128.save(f'../nineround_web/inventory_app/temp/{identifier}', {
+            "module_width":.3, 
+            "module_height":10, 
+            "font_size": 8, 
+            "text_distance": 3, 
+            "quiet_zone": 1
+            }) # save the originally generated image
+
+
+def barcodeDocxGenerator():
+    """
+    This function put barcode images in temp folder into the docx
+    """
+    document = Document()
+    section = document.sections[0]
+    section.orientation = WD_ORIENT.PORTRAIT
+    section.page_height = Mm(20)
+    section.page_width = Mm(40)
+    section.left_margin = Mm(3)
+    section.right_margin = Mm(3)
+    section.top_margin = Mm(3)
+    section.bottom_margin = Mm(0)
+    # temp = os.path.join(PATH, 'temp')
+    for subdir, dirs, files in os.walk(f'../nineround_web/inventory_app/temp/'):
+        # print(files)
+        for idx, file in enumerate(files):
+            item_detail = Inventory.objects.filter(id=file[:-4])
+            p = document.add_paragraph()
+            p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+            r = p.add_run()
+            r.add_picture(os.path.join('../nineround_web/inventory_app/temp/', file), width=Mm(35))
+            # r.add_break(WD_BREAK.PAGE)
+            p.alignment = WD_ALIGN_PARAGRAPH.LEFT
+
+            p.add_run(
+                        f'{item_detail[0].id}\n{item_detail[0].nama}\n{item_detail[0].keterangan}\n{item_detail[0].ukuran}\nRp {int(item_detail[0].harga):,}'
+
+                      ).font.size = Pt(6)
+            # p = document.add_paragraph().add_run(f'{item_detail[0]}')
+
+            # r.font.size = Pt(6)
+
+            if idx != len(files)-1:
+                r.add_break(WD_BREAK.PAGE)
+
+    document.save("../nineround_web/inventory_app/temp/output.docx")
+
+
+# def downloadFile():
 # TODO:
 # - DONE -  kasih validasi setiap kali delete (Tarik item dari Event belom)
 # - barcode
