@@ -22,6 +22,10 @@ from docx.enum.text import WD_BREAK
 import os, shutil
 from docx.shared import Pt
 PATH = os.path.dirname(os.path.abspath(__file__))
+import datetime as dt
+
+# download
+import magic
 
 
 # Create your views here.
@@ -343,23 +347,23 @@ def barcodeGenerator(request):
     if request.POST.getlist('selected_items'):
         # generate barcode images
         barcodeImageGenerator(request.POST.getlist('selected_items'))
-        # put barcode images to the docx
+        # read and put barcode images to the docx
         barcodeDocxGenerator()
-    
-    # delete all barcode png in temp folder
-    folder = '../nineround_web/inventory_app/temp/'
-    for filename in os.listdir(folder):
-        file_path = os.path.join(folder, filename)
-        try:
-            if os.path.isfile(file_path) or os.path.islink(file_path):
-                os.unlink(file_path)
-            elif os.path.isdir(file_path):
-                shutil.rmtree(file_path)
-        except Exception as e:
-            print('Failed to delete %s. Reason: %s' % (file_path, e))
-
+        
+        # delete all barcode png in /temp/img/ folder
+        folder = '../nineround_web/inventory_app/temp/img'
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if (os.path.isfile(file_path) or os.path.islink(file_path)) :
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
         
     return render(request, 'inventory_app/barcode.html', context=context)
+
 
 def barcodeImageGenerator(list_of_id):
     """
@@ -370,7 +374,7 @@ def barcodeImageGenerator(list_of_id):
 
     for identifier in list_of_id:
         code128 = bar_class(identifier, writer)
-        code128.save(f'../nineround_web/inventory_app/temp/{identifier}', {
+        code128.save(f'../nineround_web/inventory_app/temp/img/{identifier}', {
             "module_width":.3, 
             "module_height":10, 
             "font_size": 8, 
@@ -383,7 +387,10 @@ def barcodeDocxGenerator():
     """
     This function put barcode images in temp folder into the docx
     """
+
+    # initiate document
     document = Document()
+    # page layout settings
     section = document.sections[0]
     section.orientation = WD_ORIENT.PORTRAIT
     section.page_height = Mm(20)
@@ -392,35 +399,47 @@ def barcodeDocxGenerator():
     section.right_margin = Mm(3)
     section.top_margin = Mm(3)
     section.bottom_margin = Mm(0)
-    # temp = os.path.join(PATH, 'temp')
-    for subdir, dirs, files in os.walk(f'../nineround_web/inventory_app/temp/'):
-        # print(files)
+
+    # read barcode images
+    for subdir, dirs, files in os.walk(f'../nineround_web/inventory_app/temp/img/'):
         for idx, file in enumerate(files):
             item_detail = Inventory.objects.filter(id=file[:-4])
             p = document.add_paragraph()
             p.alignment = WD_ALIGN_PARAGRAPH.CENTER
             r = p.add_run()
-            r.add_picture(os.path.join('../nineround_web/inventory_app/temp/', file), width=Mm(35))
-            # r.add_break(WD_BREAK.PAGE)
+
+            # add barcode image to the docx
+            r.add_picture(os.path.join('../nineround_web/inventory_app/temp/img/', file), width=Mm(35))
             p.alignment = WD_ALIGN_PARAGRAPH.LEFT
 
             p.add_run(
                         f'{item_detail[0].id}\n{item_detail[0].nama}\n{item_detail[0].keterangan}\n{item_detail[0].ukuran}\nRp {int(item_detail[0].harga):,}'
 
                       ).font.size = Pt(6)
-            # p = document.add_paragraph().add_run(f'{item_detail[0]}')
-
-            # r.font.size = Pt(6)
-
+            # prevent adding new blank page 
             if idx != len(files)-1:
                 r.add_break(WD_BREAK.PAGE)
 
-    document.save("../nineround_web/inventory_app/temp/output.docx")
+    # delete existing docx
+    if os.path.exists('../nineround_web/inventory_app/temp/doc/generated_barcode.docx'):
+        os.unlink('../nineround_web/inventory_app/temp/doc/generated_barcode.docx')
+    # save the new docx to /temp/doc/
+    document.save("../nineround_web/inventory_app/temp/doc/generated_barcode.docx")
+    
+
+def downloadFile(response):
+    docx_file = open('../nineround_web/inventory_app/temp/doc/generated_barcode.docx', "rb").read()
+    content_type = magic.from_buffer(docx_file, mime=True)
+    response = HttpResponse(docx_file, content_type=content_type);
+
+    # pass file to the response(?)
+    response['Content-Disposition'] = 'attachment; filename="generated_barcode.docx"'
+    
+    return response
 
 
-# def downloadFile():
 # TODO:
 # - DONE -  kasih validasi setiap kali delete (Tarik item dari Event belom)
-# - barcode
+# - DONE - barcode
 # - ubah status tidak diketahui manjadi ... (brainstorming lg)
 # - ubah database menjadi: ketika user memasukkan item ke sebuah event, di event lainnya akan terhapus. Dan status akan berubah menjadi dalam event

@@ -12,4 +12,5 @@ urlpatterns = [
     path('add-item-to-inventory', views.inventoryAddItem, name='inventoryAddItem'),
     path('delete-item-from-inventory', views.inventoryDeleteItem, name='inventoryDeleteItem'),
     path('barcode', views.barcodeGenerator, name='barcode'),
+    path('barcode/download', views.downloadFile, name='barcode-download-url'),
 ]

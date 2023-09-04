@@ -57,6 +57,7 @@
     height: 120px;
 }
 #buttons input{
+    margin-right: 20px;
     height: 40px;
     width: 100px;
     background-color: #4478FF;
@@ -64,6 +65,19 @@
     border: 0;
     border-radius: 4px;
     font-size: 15px;
+}
+#downloadButton{
+    margin-left: 20px;
+    height: 40px;
+    width: 90px;
+    background-color: #4478FF;
+    color: white;
+    border: 0;
+    border-radius: 4px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 /* #generateButton */
 </style>
@@ -100,7 +114,10 @@
     </div>
     <div id="buttons">
         <input id="generateButton" type="submit" value="Generate" name="generate">
+        <a id="downloadButton" href="{% url 'barcode-download-url' %}" download="generated_barcode.docx">Download</a>
     </div>
+    
+
 </form>
 
 
