@@ -167,7 +167,7 @@
         color: white;
     }
 
-    .deleteButton input {
+    #deleteButton input {
         background-color: #FF4444;
 
     }
@@ -248,9 +248,24 @@
         {%csrf_token%}
         <div class="button cancelButton"><input type="submit" name="cancel-button" value="Cancel"></div>
     
-        <div class="button deleteButton"><input type="submit" name="delete-button" value="Delete"></div>
+        <div id="deleteButton" class="button"><input type="submit" name="delete-button" value="Delete"></div>
     </form>
 
 </div>
+
+
+<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#deleteButton').click(function () {
+            if (confirm("Are you sure want to delete this?") == true) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+    })
+</script>
 
 {% endfor %} {% endblock %}
