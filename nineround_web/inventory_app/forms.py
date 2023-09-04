@@ -8,7 +8,7 @@ class EventForm(ModelForm):
         model = Event
         fields = ('nama', 'lokasi', 'tanggal_mulai', 'tanggal_berakhir')
         widgets = {
-            'nama' : TextInput(attrs={'class':'eventFormTextField', 'placeholder':'nama event...'}),
+            'nama' : TextInput(attrs={'class':'eventFormTextField', 'placeholder':'nama event...', 'autofocus':''}),
             'lokasi': Textarea(attrs={'class':'eventFormTextArea eventFormTextField', 'placeholder':'alamat event...'}),
             'tanggal_mulai': DateInput(
                     format=('%Y-%m-%d'),
@@ -29,7 +29,7 @@ class InventoryForm(ModelForm):
         model = Inventory
         fields = ('id', 'nama', 'keterangan', 'ukuran', 'harga')
         widgets = {
-            'id': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'id item...'}),
+            'id': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'id item...', 'autofocus':''}),
             'nama': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'nama item...'}),
             'keterangan': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'keterangan item...'}),
             'ukuran': Select(attrs={'class':'inventoryFormTextfield'}),

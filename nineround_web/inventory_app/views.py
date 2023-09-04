@@ -439,7 +439,8 @@ def downloadFile(response):
 
 
 # TODO:
-# - DONE -  kasih validasi setiap kali delete (Tarik item dari Event belom)
+# - DONE -  kasih validasi setiap kali delete 
 # - DONE - barcode
+# - add autofocus pada input fields untuk mempercepat penggunaan scanner
 # - ubah status tidak diketahui manjadi ... (brainstorming lg)
 # - ubah database menjadi: ketika user memasukkan item ke sebuah event, di event lainnya akan terhapus. Dan status akan berubah menjadi dalam event
