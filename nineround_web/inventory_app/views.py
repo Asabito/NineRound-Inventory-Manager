@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Event, Inventory, EventItems # import models
+from .models import Event, Inventory # import models
 from django.db.models import Q, F
 from .forms import EventForm, InventoryForm
 
@@ -70,15 +70,13 @@ def newEvent(request):
                               tanggal_berakhir = request.POST['tanggal_berakhir']
                               )
             new_event.save()
-            for item in request.session['barcode']:
-                new_event_item = EventItems(events_id = Event.objects.latest('id').id,
-                                            items_id = item,
-                                            status_in_event = 'Barang tersedia'
-                                            )
-                new_event_item.save()
+
+            # update the item's FK to the Event (one item can only exist in an event or warehouse)
+            Inventory.objects.filter(id=request.session['barcode']).update(items_event_location=Event.objects.latest('id').id)
+
             request.session.flush()
             return redirect('events')
-            # !!!!! add return to home to remove error
+        
         elif request.POST.get('cancel-button'):
             if request.session['barcode']:
                 request.session.flush()
@@ -94,7 +92,7 @@ def newEvent(request):
 
 
 def eventDetail(request, pk):
-    event_details = Inventory.objects.filter(eventitems__events=pk).order_by('id') # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
+    event_details = Inventory.objects.filter(items_event_location=pk).order_by('id') # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
     event = Event.objects.filter(id=pk)
     context = {'event_details':event_details, 'event':event}
 
@@ -109,7 +107,7 @@ def addItemsToEvent(request, pk):
     if 'list_item' not in request.session:
         request.session['list_item'] = []
     
-    id_items_in_event = Inventory.objects.filter(eventitems__events=pk).values_list('id', flat=True)
+    id_items_in_event = Inventory.objects.filter(items_event_location=pk).values_list('id', flat=True)
     print('id_items_in_event: ',id_items_in_event)
     if request.method == 'POST':
         item_id = request.POST.get('tambah-item-textfield')
@@ -117,13 +115,7 @@ def addItemsToEvent(request, pk):
             # Jika id yang dimasukkan belum ada di event dan ada di inventory, maka ditambahkan ke session
             request.session['list_item'].append(item_id)
         elif request.POST.get('save-button'):
-            for i in request.session['list_item']:
-                added_items = EventItems(
-                    events_id = pk,
-                    items_id = i,
-                    status_in_event = 'Barang tersedia'
-                )
-                added_items.save()
+            Inventory.objects.filter(id__in=request.session['list_item']).update(items_event_location=pk)
             request.session.flush()
             return redirect('eventDetail', pk=pk)
         elif request.POST.get('cancel-button'):
@@ -148,21 +140,14 @@ def deleteItemsFromEvent(request, pk):
     if 'list_item' not in request.session:
         request.session['list_item'] = []
     
-    id_items_in_event = Inventory.objects.filter(eventitems__events=pk).values_list('id', flat=True)
-    print('id_items_in_event: ',id_items_in_event)
+    id_items_in_event = Inventory.objects.filter(items_event_location=pk).values_list('id', flat=True)
     if request.method == 'POST':
         item_id = request.POST.get('tambah-item-textfield')
         if request.POST.get('additem-to-event-button') and (item_id in id_items_in_event) and (item_id in all_inventory_id):
             # Jika id yang dimasukkan belum ada di event dan ada di inventory, maka ditambahkan ke session
             request.session['list_item'].append(item_id)
         elif request.POST.get('delete-button'):
-            event_items = EventItems.objects.filter(events_id=pk, items_id__in=request.session['list_item'])
-            print('{:^40}'.format(''))
-            print('ids: ',request.session['list_item'])
-            print('Event items before delete: ',event_items)
-            event_items.delete()
-            print('Event items after delete: ',event_items)
-            print('{:^40}'.format(''))
+            Inventory.objects.filter(id__in=request.session['list_item']).update(items_event_location=None)
             request.session.flush()
             return redirect('eventDetail', pk=pk)
         elif request.POST.get('cancel-button'):
@@ -186,17 +171,17 @@ def stockChecking(request, pk):
         
         # kalau yang di check-in adalah Tersedia, maka update di EventItems dan Inventory
         if update_to_tersedia:
-            EventItems.objects.filter(events=pk, items=update_to_tersedia).update(status_in_event='Barang tersedia') 
-            Inventory.objects.filter(id=update_to_tersedia).update(item_last_status='Barang tersedia')
+            Inventory.objects.filter(items_event_location=pk).update(item_last_status='Tersedia')
+
         # kalau yang di check-in adalah Terjual, maka update di EventItems dan Inventory
         elif update_to_terjual:
-            EventItems.objects.filter(events=pk, items=update_to_terjual).update(status_in_event='Terjual')
-            Inventory.objects.filter(id=update_to_terjual).update(item_last_status='Terjual')
+            Inventory.objects.filter(items_event_location=pk).update(item_last_status='Terjual')
+
     
-    event_details = Inventory.objects.filter(eventitems__events=pk).annotate(items_status = F('eventitems__status_in_event')).order_by('eventitems__status_in_event', 'id') # query all items in inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*. annotate menambahkan fields tertentu dari tabel lain.
-    terjual_count = EventItems.objects.filter(status_in_event='Terjual', events=pk).count()
-    barang_tersedia_count = EventItems.objects.filter(status_in_event='Barang tersedia', events=pk).count()
-    barang_tidak_ada_count = EventItems.objects.filter(status_in_event='Barang tidak ada', events=pk).count()
+    event_details = Inventory.objects.filter(items_event_location=pk).annotate(items_status = F('item_last_status')).order_by('id') 
+    terjual_count = Inventory.objects.filter(item_last_status='Terjual', items_event_location=pk).count()
+    barang_tersedia_count = Inventory.objects.filter(item_last_status='Tersedia', items_event_location=pk).count()
+    barang_tidak_ada_count = Inventory.objects.filter(item_last_status='Tidak ada', items_event_location=pk).count()
 
     events = Event.objects.filter(id=pk)
     context = {'event_details':event_details, 
@@ -442,5 +427,7 @@ def downloadFile(response):
 # - DONE -  kasih validasi setiap kali delete 
 # - DONE - barcode
 # - add autofocus pada input fields untuk mempercepat penggunaan scanner
+
+# untuk di bawah ini: database diubah dari many to many menjadi one to many (one event many items). 
 # - ubah status tidak diketahui manjadi ... (brainstorming lg)
 # - ubah database menjadi: ketika user memasukkan item ke sebuah event, di event lainnya akan terhapus. Dan status akan berubah menjadi dalam event
