@@ -41,7 +41,22 @@
         display: inline-flex;
         height: 30px;
     }
-
+    #resetButton{
+        margin-left: auto;
+        display: inline-flex;
+        height: 30px;
+        margin-left: 50px;
+        outline: none;
+        height: 30px;
+        width: 70px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #3A3A3A;
+        color: white;
+        border-radius: 4px;
+        font-size: 12px;
+    }
     .kodeBarangSearchButton input {
         /* align-items: center; */
         outline: none;
@@ -186,7 +201,7 @@
         <form method="POST" action="">
             <div class="inputKodeBarangTextField">
                 {% csrf_token %}
-                <input id="tersediaText" name="tersediaText" type="text" placeholder="Kode barang...">
+                <input id="tersediaText" name="tersediaText" type="text" placeholder="Kode barang..." autofocus>
                 <div class="kodeBarangSearchButton">
                     <input type="submit" value="Tersedia">
                     </input>
@@ -203,7 +218,10 @@
                 </div>
             </div>
         </form>
-
+        <form method="POST">
+            {% csrf_token %}
+            <input id="resetButton" type="submit" value="Reset" name="resetButton">
+        </form>
     </div>
 </div>
 
@@ -250,7 +268,7 @@
                         {{barang_tersedia_count}}
                     </div>
                     <div class="aggregation">
-                        <div class="itemColorIndicator" style="background-color:#FF4B4B ;"></div>Tidak diketahui:
+                        <div class="itemColorIndicator" style="background-color:#FF4B4B ;"></div>Tidak ada:
                         {{barang_tidak_ada_count}}
                     </div>
                 </div>

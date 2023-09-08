@@ -178,7 +178,8 @@ def stockChecking(request, pk):
     if request.method == 'POST':
         update_to_tersedia = request.POST.get('tersediaText') # refer to form dengan method POST, dan ambil entity yang memiliki ID 'tersediaText'
         update_to_terjual = request.POST.get('terjualText') # refer to form dengan method POST, dan ambil entity yang memiliki ID 'terjualText'
-        
+        reset_clicked = request.POST.get('resetButton')
+
         # kalau yang di check-in adalah Tersedia, maka update di EventItems dan Inventory
         if update_to_tersedia:
             Inventory.objects.filter(id=update_to_tersedia).update(item_last_status='Tersedia')
@@ -187,7 +188,12 @@ def stockChecking(request, pk):
         elif update_to_terjual:
             Inventory.objects.filter(id=update_to_terjual).update(item_last_status='Terjual')
 
-    
+        if reset_clicked:
+            print('yesss, it clicked <----')
+            a=Inventory.objects.filter(items_event_location=pk, item_last_status='Tersedia').update(item_last_status='Tidak ada')
+            print(a)
+            print('done, it clicked <----')
+
     event_details = Inventory.objects.filter(items_event_location=pk).annotate(items_status = F('item_last_status')).order_by('id') 
     total_count = Inventory.objects.filter(items_event_location=pk).count()
     terjual_count = Inventory.objects.filter(item_last_status='Terjual', items_event_location=pk).count()
