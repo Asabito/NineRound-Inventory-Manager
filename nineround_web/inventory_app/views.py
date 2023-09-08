@@ -46,6 +46,15 @@ def events(request):
         # return None
     elif request.method == 'POST' and request.POST.get("new-event-button"):
         return redirect('new-event')
+    
+    date_today = dt.date.today()
+    for event in events:
+        if not (event.tanggal_mulai <= date_today <= event.tanggal_berakhir):
+            Event.objects.filter(id=event.id).update(status='Selesai')
+        # print(event.id, '<---')
+        # print(event.tanggal_mulai, '<---')
+        # print(event.tanggal_berakhir)
+        # print(dt.date.today())
 
     return render(request, 'inventory_app/event.html', context=context)
     # return HttpResponse('Home Page')
@@ -180,6 +189,7 @@ def stockChecking(request, pk):
 
     
     event_details = Inventory.objects.filter(items_event_location=pk).annotate(items_status = F('item_last_status')).order_by('id') 
+    total_count = Inventory.objects.filter(items_event_location=pk).count()
     terjual_count = Inventory.objects.filter(item_last_status='Terjual', items_event_location=pk).count()
     barang_tersedia_count = Inventory.objects.filter(item_last_status='Tersedia', items_event_location=pk).count()
     barang_tidak_ada_count = Inventory.objects.filter(item_last_status='Tidak ada', items_event_location=pk).count()
@@ -187,6 +197,7 @@ def stockChecking(request, pk):
     events = Event.objects.filter(id=pk)
     context = {'event_details':event_details, 
                'events':events, 
+               'total_count': total_count,
                'terjual_count':terjual_count,
                'barang_tersedia_count':barang_tersedia_count,
                'barang_tidak_ada_count':barang_tidak_ada_count,
