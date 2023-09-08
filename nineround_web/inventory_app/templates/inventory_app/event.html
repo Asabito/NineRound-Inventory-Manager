@@ -60,11 +60,16 @@
         height: 80%;
         margin-bottom: 10px;
     }
+    .itemTableHeading{
+        width: 100%;
+    }
 
     .eventTableRow{
         display: flex;
-        border-bottom: 2px solid #878787;
         padding: 12px;
+    }
+    .tableRow{
+        border-bottom: 2px solid #878787;
     }
     .eventTableHeading{
         font-weight: bold;
@@ -115,7 +120,8 @@
     </div>
 </div>
 <div id="eventTable">
-    <div class="eventTableRow">
+<div style="display: flex; border-bottom: 2px solid #878787;">
+    <div class="eventTableRow itemTableHeading">
         <input class="checkAll" type="checkbox">
         <div class="eventTableHeading namaHeading">Nama</div>
         <div class="eventTableHeading lokasiHeading">Lokasi</div>
@@ -123,9 +129,11 @@
         <div class="eventTableHeading tanggalBerakhirHeading">Tanggal Berakhir</div>
         <div class="eventTableHeading statusHeading">Status</div>
     </div>
+    <div style="width: 10px;"></div>
+</div>
     <div class="scrollablePartTable" style="height: 95%;">
         {% for event in events %}
-        <a class="eventTableRow eventTableRowContent" href="/event-detail/{{event.id}}">
+        <a class="eventTableRow eventTableRowContent tableRow" href="/event-detail/{{event.id}}">
             <input class="checkboxes" type="checkbox" name="events_to_delete" 
                 value="{{event.id}}">
             <div class="eventTableColumn namaHeading">{{event.nama}}</div>

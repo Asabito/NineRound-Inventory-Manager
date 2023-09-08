@@ -8,7 +8,7 @@ class EventForm(ModelForm):
         model = Event
         fields = ('nama', 'lokasi', 'tanggal_mulai', 'tanggal_berakhir')
         widgets = {
-            'nama' : TextInput(attrs={'class':'eventFormTextField', 'placeholder':'nama event...', 'autofocus':''}),
+            'nama' : TextInput(attrs={'class':'eventFormTextField', 'placeholder':'nama event...'}),
             'lokasi': Textarea(attrs={'class':'eventFormTextArea eventFormTextField', 'placeholder':'alamat event...'}),
             'tanggal_mulai': DateInput(
                     format=('%Y-%m-%d'),

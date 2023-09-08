@@ -86,14 +86,17 @@
     .itemTableHeading {
         display: inline-flex;
         font-weight: bold;
+        width: 100%;
     }
 
     .itemTableRow {
         display: flex;
         padding: 12px;
+        
+    }
+    .tableRow{
         border-bottom: 2px solid #878787;
     }
-
     .itemID {
         width: 7%;
     }
@@ -116,14 +119,6 @@
 
     .statusHeading {
         width: 15%;
-    }
-
-    #itemAggregation {
-        display: flex;
-        /* width: 500px; */
-        border: solid 2px #878787;
-        height: 35px;
-        /* border-top: 0; */
     }
 
     .aggregation {
@@ -222,17 +217,20 @@
 </div>
 
 <div id="itemStockCheckingTable">
-    <div class="itemTableHeading itemTableRow">
-        <div class="itemID">ID Item</div>
-        <div class="namaPakaianHeading">Nama Pakaian</div>
-        <div class="keteranganHeading">Keterangan</div>
-        <div class="ukuranHeading">Ukuran</div>
-        <div class="hargaHeading">Harga</div>
-        <div class="statusHeading">Status</div>
+    <div style="display: flex; border-bottom: 2px solid #878787;">
+        <div class="itemTableHeading itemTableRow">
+            <div class="itemID">ID Item</div>
+            <div class="namaPakaianHeading">Nama Pakaian</div>
+            <div class="keteranganHeading">Keterangan</div>
+            <div class="ukuranHeading">Ukuran</div>
+            <div class="hargaHeading">Harga</div>
+            <div class="statusHeading">Status</div>
+        </div>
+        <div style="width: 10px;"></div>
     </div>
     <div class="scrollablePartTable" style="height: 480px;">
         {% for event_item in event_items %}
-        <div class="itemTableRow">
+        <div class="itemTableRow tableRow">
             <div class="itemID">{{event_item.id}}</div>
             <div class="namaPakaianHeading">{{event_item.nama}}</div>
             <div class="keteranganHeading">{{event_item.keterangan}}</div>

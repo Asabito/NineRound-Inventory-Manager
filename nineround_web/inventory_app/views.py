@@ -57,6 +57,8 @@ def newEvent(request):
     if 'barcode' not in request.session:
         request.session['barcode'] = []
     # apabila klik submit-button atau delete-item, maka
+    print(Event.objects.all().order_by('-timestamp').first().id, '<----')
+
     if request.method == 'POST':
         form = EventForm(request.POST)
         
@@ -72,8 +74,7 @@ def newEvent(request):
             new_event.save()
 
             # update the item's FK to the Event (one item can only exist in an event or warehouse)
-            Inventory.objects.filter(id=request.session['barcode']).update(items_event_location=Event.objects.latest('id').id)
-
+            Inventory.objects.filter(id__in=request.session['barcode']).update(items_event_location=Event.objects.all().order_by('-timestamp').first().id)
             request.session.flush()
             return redirect('events')
         
@@ -171,11 +172,11 @@ def stockChecking(request, pk):
         
         # kalau yang di check-in adalah Tersedia, maka update di EventItems dan Inventory
         if update_to_tersedia:
-            Inventory.objects.filter(items_event_location=pk).update(item_last_status='Tersedia')
+            Inventory.objects.filter(id=update_to_tersedia).update(item_last_status='Tersedia')
 
         # kalau yang di check-in adalah Terjual, maka update di EventItems dan Inventory
         elif update_to_terjual:
-            Inventory.objects.filter(items_event_location=pk).update(item_last_status='Terjual')
+            Inventory.objects.filter(id=update_to_terjual).update(item_last_status='Terjual')
 
     
     event_details = Inventory.objects.filter(items_event_location=pk).annotate(items_status = F('item_last_status')).order_by('id') 

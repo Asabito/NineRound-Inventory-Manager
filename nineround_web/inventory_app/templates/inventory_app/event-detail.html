@@ -56,6 +56,7 @@
     .itemTableHeading {
         /* display: flex; */
         font-weight: bold;
+        width: 100%;
     }
     
     .itemTableRow {
@@ -125,12 +126,15 @@
     <a id="add-items-btn" href="/event-detail/{{event.0.id}}/add-items-to-event"><div>Add items</div></a>
 </div>
 <div id="itemTable">
-    <div class="itemTableHeading itemTableRow">
-        <div class="idPakaian">ID</div>
-        <div class="namaPakaianHeading">Nama Pakaian</div>
-        <div class="keteranganHeading">Keterangan</div>
-        <div class="ukuranHeading">Ukuran</div>
-        <div class="hargaHeading">Harga</div>
+    <div style="display: flex;">
+        <div class="itemTableHeading itemTableRow">
+            <div class="idPakaian">ID</div>
+            <div class="namaPakaianHeading">Nama Pakaian</div>
+            <div class="keteranganHeading">Keterangan</div>
+            <div class="ukuranHeading">Ukuran</div>
+            <div class="hargaHeading">Harga</div>
+        </div>
+        <div style="width: 10px;"></div>
     </div>
     <div class="scrollablePartTable" style="height:450px;">
         {% for event_detail in event_details %}

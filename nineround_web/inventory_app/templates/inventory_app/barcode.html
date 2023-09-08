@@ -12,13 +12,15 @@
     }
     .itemTableHeading{
         font-weight: bold;
+        width: 100%;
     }
     .itemTableRow{
         display: flex;
-        border-bottom: 2px solid #878787;
         padding: 12px;
     }
-        
+    .tableRow{
+        border-bottom: 2px solid #878787;
+    }
     .checkBoxesColumn {
         margin-right: 10px;
     }
@@ -91,17 +93,20 @@
 <form method="POST">
     {% csrf_token %}
     <div id="itemTable">
-        <div class="itemTableHeading itemTableRow">
-            <div class="checkBoxesColumn"><input class="checkAll" type="checkbox"></div>
-            <div class="idColumn">ID</div>
-            <div class="namaPakaianColumn">Nama</div>
-            <div class="keteranganColumn">Keterangan</div>
-            <div class="ukuranColumn">Ukuran</div>
-            <div class="hargaColumn">Harga</div>
+        <div style="display: flex; border-bottom: 2px solid #878787;">
+            <div class="itemTableHeading itemTableRow">
+                <div class="checkBoxesColumn"><input class="checkAll" type="checkbox"></div>
+                <div class="idColumn">ID</div>
+                <div class="namaPakaianColumn">Nama</div>
+                <div class="keteranganColumn">Keterangan</div>
+                <div class="ukuranColumn">Ukuran</div>
+                <div class="hargaColumn">Harga</div>
+            </div>
+            <div style="width: 10px;"></div>
         </div>
         <div class="scrollablePartTable" style="height: 580px;">
             {% for item in items %}
-                <div class="itemTableRow">
+                <div class="itemTableRow tableRow">
                     <div class="checkBoxesColumn"><input class="checkboxes" type="checkbox" name="selected_items" value="{{item.id}}"></div>
                     <div class="idColumn">{{item.id}}</div>
                     <div class="namaPakaianColumn">{{item.nama}}</div>
