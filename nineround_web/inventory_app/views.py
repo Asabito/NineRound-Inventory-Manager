@@ -3,6 +3,11 @@ from django.http import HttpResponse
 from .models import Event, Inventory # import models
 from django.db.models import Q, F
 from .forms import EventForm, InventoryForm
+# user auth
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 # barcode
 import barcode
@@ -29,6 +34,29 @@ import magic
 
 
 # Create your views here.
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        try:
+            User.objects.get(username=username)
+        except:
+            messages.error(request, 'User does not exist')
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('events')
+        else:
+            messages.error(request, 'User or password does not exists')
+    return render(request, 'inventory_app/login.html')
+
+
+def logoutUser(request):
+    logout(request)
+    return redirect('loginPage')
+
+
+@login_required(login_url='loginPage')
 def events(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     events = Event.objects.all().order_by('timestamp')
@@ -59,7 +87,7 @@ def events(request):
     return render(request, 'inventory_app/event.html', context=context)
     # return HttpResponse('Home Page')
 
-
+@login_required(login_url='loginPage')
 def newEvent(request):
     form = EventForm()
     # buat list barcode apabila belum ada
@@ -100,7 +128,7 @@ def newEvent(request):
     context = {'form':form, 'items':items}
     return render(request, 'inventory_app/new-event.html', context=context)
 
-
+@login_required(login_url='loginPage')
 def eventDetail(request, pk):
     event_details = Inventory.objects.filter(items_event_location=pk).order_by('id') # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
     event = Event.objects.filter(id=pk)
@@ -108,7 +136,7 @@ def eventDetail(request, pk):
 
     return render(request, 'inventory_app/event-detail.html', context=context)
 
-
+@login_required(login_url='loginPage')
 def addItemsToEvent(request, pk):
     # additional note: addItemsToEvent dan deleteItemsFromEvent bisa dibuatkan decoratornya agar lebih hemat penulisan
     event = Event.objects.filter(id=pk)
@@ -142,7 +170,7 @@ def addItemsToEvent(request, pk):
     return render(request, 'inventory_app/add-item-to-event.html', context=context)
     None
 
-
+@login_required(login_url='loginPage')
 def deleteItemsFromEvent(request, pk):
     event = Event.objects.filter(id=pk)
     all_inventory_id = Inventory.objects.values_list('id', flat=True)
@@ -173,7 +201,7 @@ def deleteItemsFromEvent(request, pk):
     }
     return render(request, 'inventory_app/delete-item-from-event.html', context=context)
 
-
+@login_required(login_url='loginPage')
 def stockChecking(request, pk):
     if request.method == 'POST':
         update_to_tersedia = request.POST.get('tersediaText') # refer to form dengan method POST, dan ambil entity yang memiliki ID 'tersediaText'
@@ -210,7 +238,7 @@ def stockChecking(request, pk):
                }
     return render(request, 'inventory_app/stock-checking.html', context=context)
 
-
+@login_required(login_url='loginPage')
 def inventoryPage(request):
     items = Inventory.objects.all().order_by('id')
     if request.method == 'POST' and request.POST.get('add-button'):
@@ -222,7 +250,7 @@ def inventoryPage(request):
 
     return render(request, 'inventory_app/inventory.html', context=context)
 
-
+@login_required(login_url='loginPage')
 def inventoryAddItem(request):
     # raw form
     form = InventoryForm()
@@ -313,7 +341,7 @@ def inventoryAddItem(request):
     context = {'form':form, 'items':request.session["temp_inven"], 'raise_warning':raise_warning}
     return render(request, 'inventory_app/inventory-add-item.html', context=context)
 
-
+@login_required(login_url='loginPage')
 def inventoryDeleteItem(request):
     # buat session apabila belum ada
     if 'temp_item_list_to_be_deleted_from_inventory' not in request.session:
@@ -343,7 +371,7 @@ def inventoryDeleteItem(request):
     context = {'items_to_be_deleted': items_to_be_deleted}
     return render(request, 'inventory_app/inventory-delete-item.html', context=context)
 
-
+@login_required(login_url='loginPage')
 def barcodeGenerator(request):
     item = Inventory.objects.all().order_by('id')
     context = {'items':item}
@@ -431,6 +459,9 @@ def barcodeDocxGenerator():
     
 
 def downloadFile(response):
+    """
+    This function provide file to be downloaded by user
+    """
     docx_file = open('../nineround_web/inventory_app/temp/doc/generated_barcode.docx', "rb").read()
     content_type = magic.from_buffer(docx_file, mime=True)
     response = HttpResponse(docx_file, content_type=content_type);

@@ -1,0 +1,25 @@
+<style>
+
+#loginSection{
+    height: 100%;
+}
+</style>
+{%extends 'main.html'%}
+{% block content %}
+
+<div id="loginSection">
+    <form method="POST" action="">
+        {% csrf_token %}
+        <label for="">Username</label><br>
+        <input id="usernameInput" name="username" type="text"><br>
+        <label for="">Password</label><br>
+        <input id="passwordInput" name="password" type="password"><br>
+        <input type="submit">
+        {% for message in messages %}
+        {{message}}
+        {% endfor %}
+    </form>
+</div>
+
+
+{% endblock content %}
