@@ -41,13 +41,13 @@ def loginPage(request):
         try:
             User.objects.get(username=username)
         except:
-            messages.error(request, 'User does not exist')
+            messages.error(request, 'Username or password is incorrect')
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return redirect('events')
         else:
-            messages.error(request, 'User or password does not exists')
+            messages.error(request, 'Username or password is incorrect')
     return render(request, 'inventory_app/login.html')
 
 
@@ -93,6 +93,7 @@ def events(request):
     return render(request, 'inventory_app/event.html', context=context)
     # return HttpResponse('Home Page')
 
+@login_required(login_url='loginPage')
 @user_passes_test(admin_superadmin_only)
 def newEvent(request):
     form = EventForm()
@@ -134,6 +135,7 @@ def newEvent(request):
     context = {'form':form, 'items':items}
     return render(request, 'inventory_app/new-event.html', context=context)
 
+@login_required(login_url='loginPage')
 @user_passes_test(admin_superadmin_only)
 def eventDetail(request, pk):
     event_details = Inventory.objects.filter(items_event_location=pk).order_by('id') # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
@@ -142,6 +144,7 @@ def eventDetail(request, pk):
 
     return render(request, 'inventory_app/event-detail.html', context=context)
 
+@login_required(login_url='loginPage')
 @user_passes_test(admin_superadmin_only)
 def addItemsToEvent(request, pk):
     # additional note: addItemsToEvent dan deleteItemsFromEvent bisa dibuatkan decoratornya agar lebih hemat penulisan
@@ -176,6 +179,7 @@ def addItemsToEvent(request, pk):
     return render(request, 'inventory_app/add-item-to-event.html', context=context)
     None
 
+@login_required(login_url='loginPage')
 @user_passes_test(superadmin_only)
 def deleteItemsFromEvent(request, pk):
     event = Event.objects.filter(id=pk)
@@ -207,6 +211,7 @@ def deleteItemsFromEvent(request, pk):
     }
     return render(request, 'inventory_app/delete-item-from-event.html', context=context)
 
+@login_required(login_url='loginPage')
 @user_passes_test(admin_superadmin_only)
 def stockChecking(request, pk):
     if request.method == 'POST':
@@ -244,6 +249,7 @@ def stockChecking(request, pk):
                }
     return render(request, 'inventory_app/stock-checking.html', context=context)
 
+@login_required(login_url='loginPage')
 @user_passes_test(admin_superadmin_only)
 def inventoryPage(request):
     items = Inventory.objects.all().order_by('id')
@@ -256,6 +262,7 @@ def inventoryPage(request):
 
     return render(request, 'inventory_app/inventory.html', context=context)
 
+@login_required(login_url='loginPage')
 @user_passes_test(admin_superadmin_only)
 def inventoryAddItem(request):
     # raw form
@@ -347,6 +354,7 @@ def inventoryAddItem(request):
     context = {'form':form, 'items':request.session["temp_inven"], 'raise_warning':raise_warning}
     return render(request, 'inventory_app/inventory-add-item.html', context=context)
 
+@login_required(login_url='loginPage')
 @user_passes_test(superadmin_only)
 def inventoryDeleteItem(request):
     # buat session apabila belum ada
@@ -377,6 +385,7 @@ def inventoryDeleteItem(request):
     context = {'items_to_be_deleted': items_to_be_deleted}
     return render(request, 'inventory_app/inventory-delete-item.html', context=context)
 
+@login_required(login_url='loginPage')
 @user_passes_test(admin_superadmin_only)
 def barcodeGenerator(request):
     item = Inventory.objects.all().order_by('id')

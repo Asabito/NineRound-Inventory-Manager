@@ -1,89 +1,138 @@
-    <style>
-            /* ----- Side bar ----- */
-        #sidebar{
-            width: 20%;
-            height: 100%;
-            background-color: #813E00;
-        }
-        .sidebarMenu{
-            background-color: #813E00;
-            width: 100%;
-            height: 74px;
-            display: flex;
-            align-items: center;
-            /* cursor: default; */
-        }
-        .sidebarMenu:hover{
-            background-color: #6D3400;
-        }
-        .sidebarMenuImg {
-            flex-grow: 2;
-            flex: 0 0 auto; 
-            /* gatau flex diatas ini untuk apa? */
-            margin: 0 10px 0 10px;
-        }
-        .sidebarMenuImg img{
-            width: 50px;
-            height: 50px;
-        }
-        .sidebarMenuText {
-            flex-grow: 8;
-            /* text-align: center; */
-            margin-left: 8px;
-            color: white;
-            font-size: 20px;
-        }
-        #header{
-            /* font-size: 52px; */
-            color: white;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        #header h1{
-            font-size: 52px;
-        }
-        #header p{
-            font-size: 24px;
-        }
-        /* ----- End of Side bar ----- */
-    </style>
-    
-    {% load static %}
-    <div id="header">
-        <h1>Nine Round</h1>
-        <p>Inventory</p>
-    </div>
+<style>
+    /* ----- Side bar ----- */
+    #sidebar {
+        width: 20%;
+        height: 100%;
+        background-color: #813E00;
+    }
 
-    <a href="/" class="sidebarMenu">
+    .sidebarMenu {
+        background-color: #813E00;
+        width: 100%;
+        height: 74px;
+        display: flex;
+        align-items: center;
+        /* cursor: default; */
+    }
+
+    .sidebarMenu:hover {
+        background-color: #6D3400;
+    }
+
+    .sidebarMenuImg {
+        flex-grow: 2;
+        flex: 0 0 auto;
+        /* gatau flex diatas ini untuk apa? */
+        margin: 0 10px 0 10px;
+    }
+
+    .sidebarMenuImg img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .sidebarMenuText {
+        flex-grow: 8;
+        /* text-align: center; */
+        margin-left: 8px;
+        color: white;
+        font-size: 20px;
+    }
+
+    #header {
+        /* font-size: 52px; */
+        color: white;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    #header h1 {
+        font-size: 52px;
+    }
+
+    #header p {
+        font-size: 24px;
+    }
+
+    .loginLogoutButton {
+        width: 100px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+    }
+    #buttons{
+        width: 100%;
+        height: 80px;
+        /* border: 1px solid black; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .loginButton {
+        background-color: white;
+        color: black;
+    }
+
+    .logoutButton {
+        background-color: red;
+        color: white;
+
+    }
+
+    a:link {
+        /* text-decoration: none; */
+    }
+
+    /* ----- End of Side bar ----- */
+</style>
+
+{% load static %}
+<div id="header">
+    <h1>Nine Round</h1>
+    <p>Inventory</p>
+</div>
+
+<a href="/" class="sidebarMenu">
+    <div class="sidebarMenuImg">
+        <img src="{% static 'Ellipse.png' %}" alt="">
+    </div>
+    <div class="sidebarMenuText">
+        Event
+    </div>
+</a>
+<a href="/inventory">
+    <div class="sidebarMenu">
         <div class="sidebarMenuImg">
             <img src="{% static 'Ellipse.png' %}" alt="">
         </div>
         <div class="sidebarMenuText">
-            Event
+            Inventory
         </div>
-    </a>
-    <a href="/inventory">
-        <div class="sidebarMenu">
-            <div class="sidebarMenuImg">
-                <img src="{% static 'Ellipse.png' %}" alt="">
-            </div>
-            <div class="sidebarMenuText">
-                Inventory
-            </div>
+    </div>
+</a>
+<a href="/barcode">
+    <div class="sidebarMenu">
+        <div class="sidebarMenuImg">
+            <img src="{% static 'Ellipse.png' %}" alt="">
         </div>
-    </a>
-    <a href="/barcode">
-        <div class="sidebarMenu">
-            <div class="sidebarMenuImg">
-                <img src="{% static 'Ellipse.png' %}" alt="">
-            </div>
-            <div class="sidebarMenuText">
-                Barcode
-            </div>
+        <div class="sidebarMenuText">
+            Barcode
         </div>
+    </div>
+</a>
+<div id="buttons">
+    {% if request.user.is_authenticated %}
+
+    <a href="{% url 'logout'  %}">
+        <div class="loginLogoutButton logoutButton">Logout</div>
     </a>
-    {% if request.user.is_authenticated  %}
-    <a href="{% url 'logout'  %}">Logout</a>
     {% else %}
-    <a href="{% url 'loginPage'  %}">Login</a>
+
+    <a href="{% url 'loginPage'  %}">
+        <div class="loginLogoutButton loginButton">Login</div>
+    </a>
+
     {% endif %}
+</div>
