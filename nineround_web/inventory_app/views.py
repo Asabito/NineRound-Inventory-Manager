@@ -7,7 +7,7 @@ from .forms import EventForm, InventoryForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 # barcode
 import barcode
@@ -56,6 +56,12 @@ def logoutUser(request):
     return redirect('loginPage')
 
 
+guest_only = lambda u: u.role == 'Guest'
+admin_only = lambda u: u.role == 'Admin'
+superadmin_only = lambda u: u.role == 'Superadmin'
+admin_superadmin_only = lambda u: u.role in ['Admin','Superadmin']
+
+
 @login_required(login_url='loginPage')
 def events(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
@@ -87,14 +93,14 @@ def events(request):
     return render(request, 'inventory_app/event.html', context=context)
     # return HttpResponse('Home Page')
 
-@login_required(login_url='loginPage')
+@user_passes_test(admin_superadmin_only)
 def newEvent(request):
     form = EventForm()
     # buat list barcode apabila belum ada
     if 'barcode' not in request.session:
         request.session['barcode'] = []
     # apabila klik submit-button atau delete-item, maka
-    print(Event.objects.all().order_by('-timestamp').first().id, '<----')
+    
 
     if request.method == 'POST':
         form = EventForm(request.POST)
@@ -128,7 +134,7 @@ def newEvent(request):
     context = {'form':form, 'items':items}
     return render(request, 'inventory_app/new-event.html', context=context)
 
-@login_required(login_url='loginPage')
+@user_passes_test(admin_superadmin_only)
 def eventDetail(request, pk):
     event_details = Inventory.objects.filter(items_event_location=pk).order_by('id') # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
     event = Event.objects.filter(id=pk)
@@ -136,7 +142,7 @@ def eventDetail(request, pk):
 
     return render(request, 'inventory_app/event-detail.html', context=context)
 
-@login_required(login_url='loginPage')
+@user_passes_test(admin_superadmin_only)
 def addItemsToEvent(request, pk):
     # additional note: addItemsToEvent dan deleteItemsFromEvent bisa dibuatkan decoratornya agar lebih hemat penulisan
     event = Event.objects.filter(id=pk)
@@ -170,7 +176,7 @@ def addItemsToEvent(request, pk):
     return render(request, 'inventory_app/add-item-to-event.html', context=context)
     None
 
-@login_required(login_url='loginPage')
+@user_passes_test(superadmin_only)
 def deleteItemsFromEvent(request, pk):
     event = Event.objects.filter(id=pk)
     all_inventory_id = Inventory.objects.values_list('id', flat=True)
@@ -201,7 +207,7 @@ def deleteItemsFromEvent(request, pk):
     }
     return render(request, 'inventory_app/delete-item-from-event.html', context=context)
 
-@login_required(login_url='loginPage')
+@user_passes_test(admin_superadmin_only)
 def stockChecking(request, pk):
     if request.method == 'POST':
         update_to_tersedia = request.POST.get('tersediaText') # refer to form dengan method POST, dan ambil entity yang memiliki ID 'tersediaText'
@@ -238,7 +244,7 @@ def stockChecking(request, pk):
                }
     return render(request, 'inventory_app/stock-checking.html', context=context)
 
-@login_required(login_url='loginPage')
+@user_passes_test(admin_superadmin_only)
 def inventoryPage(request):
     items = Inventory.objects.all().order_by('id')
     if request.method == 'POST' and request.POST.get('add-button'):
@@ -250,7 +256,7 @@ def inventoryPage(request):
 
     return render(request, 'inventory_app/inventory.html', context=context)
 
-@login_required(login_url='loginPage')
+@user_passes_test(admin_superadmin_only)
 def inventoryAddItem(request):
     # raw form
     form = InventoryForm()
@@ -341,7 +347,7 @@ def inventoryAddItem(request):
     context = {'form':form, 'items':request.session["temp_inven"], 'raise_warning':raise_warning}
     return render(request, 'inventory_app/inventory-add-item.html', context=context)
 
-@login_required(login_url='loginPage')
+@user_passes_test(superadmin_only)
 def inventoryDeleteItem(request):
     # buat session apabila belum ada
     if 'temp_item_list_to_be_deleted_from_inventory' not in request.session:
@@ -371,7 +377,7 @@ def inventoryDeleteItem(request):
     context = {'items_to_be_deleted': items_to_be_deleted}
     return render(request, 'inventory_app/inventory-delete-item.html', context=context)
 
-@login_required(login_url='loginPage')
+@user_passes_test(admin_superadmin_only)
 def barcodeGenerator(request):
     item = Inventory.objects.all().order_by('id')
     context = {'items':item}

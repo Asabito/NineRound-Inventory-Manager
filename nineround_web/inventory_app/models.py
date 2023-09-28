@@ -1,7 +1,21 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
- 
+class User(AbstractUser):
+    # NEW
+    # class Role(models.TextChoices):
+    #     SUPERADMIN = "Superadmin", "Superadmin" 
+    #     ADMIN = "Admin", "Admin"
+    #     GUEST = "Guest", "Guest"
+    roleChoices = [
+        ("Superadmin", "Superadmin"),
+        ("Admin", "Admin"),
+        ("Guest", "Guest"),
+    ]
+    role = models.CharField(max_length=12, choices=roleChoices, default="Guest")
+
+
 class Event(models.Model):
     nama = models.CharField(max_length=80)
     lokasi = models.TextField(max_length=300)
@@ -44,6 +58,9 @@ class Inventory(models.Model):
     def __str__(self) -> str:
         return self.nama
     
+
+
+
 # class EventItems(models.Model):
 #     # gunakan Class Meta untuk melakukan setting sesuai terhadap model yang dibuat, pilihan setting tersedia oleh Django
 #     class Meta:
