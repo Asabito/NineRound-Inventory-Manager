@@ -31,7 +31,10 @@ import datetime as dt
 
 # download
 import magic
-
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent
+IMG_DIR = os.path.join(BASE_DIR, 'inventory_app', 'temp', 'img')
+DOC_DIR = os.path.join(BASE_DIR, 'inventory_app', 'temp', 'doc')
 
 # Create your views here.
 def loginPage(request):
@@ -397,7 +400,7 @@ def barcodeGenerator(request):
         barcodeDocxGenerator()
         
         # delete all barcode png in /temp/img/ folder
-        folder = '../nineround_web/inventory_app/temp/img'
+        folder = IMG_DIR
         for filename in os.listdir(folder):
             file_path = os.path.join(folder, filename)
             try:
@@ -420,7 +423,8 @@ def barcodeImageGenerator(list_of_id):
 
     for identifier in list_of_id:
         code128 = bar_class(identifier, writer)
-        code128.save(f'../nineround_web/inventory_app/temp/img/{identifier}', {
+        print('--------------->', os.path.join(IMG_DIR, identifier))
+        code128.save(os.path.join(IMG_DIR, identifier), {
             "module_width":.3, 
             "module_height":10, 
             "font_size": 8, 
@@ -447,7 +451,7 @@ def barcodeDocxGenerator():
     section.bottom_margin = Mm(0)
 
     # read barcode images
-    for subdir, dirs, files in os.walk(f'../nineround_web/inventory_app/temp/img/'):
+    for subdir, dirs, files in os.walk(IMG_DIR):
         for idx, file in enumerate(files):
             item_detail = Inventory.objects.filter(id=file[:-4])
             p = document.add_paragraph()
@@ -455,7 +459,7 @@ def barcodeDocxGenerator():
             r = p.add_run()
 
             # add barcode image to the docx
-            r.add_picture(os.path.join('../nineround_web/inventory_app/temp/img/', file), width=Mm(35))
+            r.add_picture(os.path.join(IMG_DIR, file), width=Mm(35))
             p.alignment = WD_ALIGN_PARAGRAPH.LEFT
 
             p.add_run(
@@ -467,17 +471,17 @@ def barcodeDocxGenerator():
                 r.add_break(WD_BREAK.PAGE)
 
     # delete existing docx
-    if os.path.exists('../nineround_web/inventory_app/temp/doc/generated_barcode.docx'):
-        os.unlink('../nineround_web/inventory_app/temp/doc/generated_barcode.docx')
+    if os.path.exists(os.path.join(DOC_DIR, 'generated_barcode.docx')):
+        os.unlink(os.path.join(DOC_DIR, 'generated_barcode.docx'))
     # save the new docx to /temp/doc/
-    document.save("../nineround_web/inventory_app/temp/doc/generated_barcode.docx")
+    document.save(os.path.join(DOC_DIR, 'generated_barcode.docx'))
     
 
 def downloadFile(response):
     """
     This function provide file to be downloaded by user
     """
-    docx_file = open('../nineround_web/inventory_app/temp/doc/generated_barcode.docx', "rb").read()
+    docx_file = open(os.path.join(DOC_DIR, 'generated_barcode.docx'), "rb").read()
     content_type = magic.from_buffer(docx_file, mime=True)
     response = HttpResponse(docx_file, content_type=content_type);
 
