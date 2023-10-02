@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-^z3d9ruel((xdvi%r=+gmh&c5ag-g4^wjhl78x96h_xfu()6=y
 DEBUG = True
 
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['127.0.0.1', 'www.inventory.nineround.web.id']
+ALLOWED_HOSTS = ['inventory.nineround.web.id']
 
 
 
