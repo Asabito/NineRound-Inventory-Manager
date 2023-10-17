@@ -216,10 +216,10 @@
     </div>
 </form>
 <form method="POST">
+    {% csrf_token %}
     <div id="bottomButtons">
         <input type="submit" name="submit-button" value="Submit" id="submit-button">
 
-        {% csrf_token %}
         <input type="submit" name="cancel-button" value="Cancel" id="cancel-button">
 </form>
 </div>

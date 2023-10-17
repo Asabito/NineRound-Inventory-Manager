@@ -122,12 +122,14 @@ def newEvent(request):
 
             # update the item's FK to the Event (one item can only exist in an event or warehouse)
             Inventory.objects.filter(id__in=request.session['barcode']).update(items_event_location=Event.objects.all().order_by('-timestamp').first().id)
-            request.session.flush()
+            # request.session.flush()
+            del request.session['barcode']
             return redirect('events')
         
         elif request.POST.get('cancel-button'):
             if request.session['barcode']:
-                request.session.flush()
+                # request.session.flush()
+                del request.session['barcode']
             return redirect('events')
         elif form.is_valid() and request.POST.get("delete-button"):
             deleted_id = request.POST.getlist('items_to_delete')
@@ -166,10 +168,12 @@ def addItemsToEvent(request, pk):
             request.session['list_item'].append(item_id)
         elif request.POST.get('save-button'):
             Inventory.objects.filter(id__in=request.session['list_item']).update(items_event_location=pk)
-            request.session.flush()
+            # request.session.flush()
+            del request.session['list_item']
             return redirect('eventDetail', pk=pk)
         elif request.POST.get('cancel-button'):
-            request.session.flush()
+            # request.session.flush()
+            del request.session['list_item']
             return redirect('eventDetail', pk=pk)
 
     event_items = Inventory.objects.filter(id__in=request.session['list_item'])
@@ -199,10 +203,13 @@ def deleteItemsFromEvent(request, pk):
             request.session['list_item'].append(item_id)
         elif request.POST.get('delete-button'):
             Inventory.objects.filter(id__in=request.session['list_item']).update(items_event_location=None)
-            request.session.flush()
+            # request.session.flush()
+            del request.session['list_item']
+
             return redirect('eventDetail', pk=pk)
         elif request.POST.get('cancel-button'):
-            request.session.flush()
+            # request.session.flush()
+            del request.session['list_item']
             return redirect('eventDetail', pk=pk)
 
     event_items = Inventory.objects.filter(id__in=request.session['list_item'])
@@ -345,12 +352,14 @@ def inventoryAddItem(request):
                                  harga = x['item_harga']
                                 )
             new_item.save()
-            request.session.flush()
+            # request.session.flush()
+            del request.session["temp_inven"]
         return redirect('inventoryPage')
     
     # cancel button
     elif request.method == 'POST' and request.POST.get('cancel-button'):
-        request.session.flush()
+        # request.session.flush()
+        del request.session["temp_inven"]
         return redirect('inventoryPage')
     # items = Inventory.objects.all()
 
@@ -375,10 +384,12 @@ def inventoryDeleteItem(request):
     
     if request.method == 'POST' and request.POST.get('submit-button'):
         items_to_be_deleted.delete()
-        request.session.flush()
+        # request.session.flush()
+        del request.session['temp_item_list_to_be_deleted_from_inventory']
         return redirect('inventoryPage')
     elif request.method == 'POST' and request.POST.get('cancel-button'):
-        request.session.flush()
+        # request.session.flush()
+        del request.session['temp_item_list_to_be_deleted_from_inventory']
         return redirect('inventoryPage')
 
     # save session modification
