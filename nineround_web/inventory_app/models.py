@@ -45,7 +45,8 @@ class Inventory(models.Model):
         ('XXXL', 'XXXL'),
         ('All Size', 'All Size'),
     ]
-    ukuran = models.CharField(max_length=8, choices=ukuran_choices, default='All Size')
+    # ukuran = models.CharField(max_length=8, choices=ukuran_choices, default='All Size')
+    ukuran = models.CharField(max_length=9)
     harga = models.DecimalField(max_digits=10, decimal_places=0)
     itemLastStatusChoices = [
         ('Terjual', 'Terjual'),
@@ -53,7 +54,7 @@ class Inventory(models.Model):
         ('Tidak ada', 'Tidak ada'),
     ]
     item_last_status = models.CharField(max_length=18, choices=itemLastStatusChoices, default='Tersedia')
-    items_event_location = models.ForeignKey(Event, on_delete=models.CASCADE, null=True)
+    items_event_location = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self) -> str:
         return self.nama

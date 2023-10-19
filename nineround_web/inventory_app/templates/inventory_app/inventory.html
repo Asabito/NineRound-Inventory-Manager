@@ -4,6 +4,14 @@
         display: flex;
         margin: 50px;
     }
+    #upload-section{
+        display: flex;
+        margin-left: 50px;
+    }
+    #upload-section p{
+        margin-left: 20px;
+        color: red;
+    }
     #manipulateButton{
         display: flex;
         margin-left: auto;
@@ -81,7 +89,20 @@
             <input id="delete-button" type="submit" name="delete-button" value="Delete items">
             <input id="add-button" type="submit" name="add-button" value="Add items">
         </form>
+
     </div>
+</div>
+<div id="upload-section">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input id="upload-button" type="file" name="upload-button" value="Upload File">
+        <input id="submit-upload" type="submit" name="submit-upload" value="Upload">
+    </form>
+    <p>    
+    {% for message in messages %}
+    {{message}}
+    {% endfor %}
+    </p>
 </div>
 <div id="itemTable">
     <div style="display: flex; border-bottom: 2px solid #878787;">

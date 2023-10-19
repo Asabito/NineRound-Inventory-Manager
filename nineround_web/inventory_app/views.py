@@ -36,6 +36,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 IMG_DIR = os.path.join(BASE_DIR, 'inventory_app', 'temp', 'img')
 DOC_DIR = os.path.join(BASE_DIR, 'inventory_app', 'temp', 'doc')
 
+# upload
+import pandas as pd
+
 # Create your views here.
 def loginPage(request):
     if request.method == 'POST':
@@ -267,10 +270,50 @@ def inventoryPage(request):
         return redirect('inventoryAddItem')
     elif request.method == 'POST' and request.POST.get('delete-button'):
         return redirect('inventoryDeleteItem')
+    elif request.method == 'POST' and request.POST.get('submit-upload'):
+        # print('--->',request.FILES)
+        # print('--->',request.FILES['upload-button'])
+        try:
+            if 2621440 < request.FILES['upload-button'].size:
+                print('error bro')
+                raise MemoryError
+            excelParser(request.FILES['upload-button'])
+            del request.FILES['upload-button']
+        except:
+            messages.error(request, 'File size is too much or id is used or wrong excel format!')
 
     context = {'items':items}
 
     return render(request, 'inventory_app/inventory.html', context=context)
+
+
+
+def excelParser(file):
+    df = pd.read_excel(file)
+    ids_in_db = Inventory.objects.values_list('id', flat=True)
+    print('processing data parsing ---->')
+    data_to_be_inputted = []
+    for d in df.values:
+        print(d[0])
+        print(d[1])
+        print(d[2])
+        print(d[3])
+        print(d[4])
+        new_item = Inventory(
+                                id = d[0],
+                                nama = d[1],
+                                keterangan = d[2],
+                                ukuran = d[3],
+                                harga = d[4]
+                            )
+        new_item.full_clean()
+        data_to_be_inputted.append(new_item)
+    print('parsing done <-----')
+    for vd in data_to_be_inputted:
+        vd.save()
+    print('parsing done <-----')
+
+
 
 @login_required(login_url='loginPage')
 @user_passes_test(admin_superadmin_only)
@@ -353,7 +396,8 @@ def inventoryAddItem(request):
                                 )
             new_item.save()
             # request.session.flush()
-            del request.session["temp_inven"]
+            if 'temp_inven' in request.session:
+                del request.session["temp_inven"]
         return redirect('inventoryPage')
     
     # cancel button

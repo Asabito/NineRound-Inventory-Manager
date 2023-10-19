@@ -32,8 +32,8 @@ class InventoryForm(ModelForm):
             'id': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'id item...', 'autofocus':''}),
             'nama': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'nama item...'}),
             'keterangan': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'keterangan item...'}),
-            'ukuran': Select(attrs={'class':'inventoryFormTextfield'}),
-            # 'ukuran': ChoiceField(attrs={'class':'inventoryFormTextfield', 'placeholder':'keterangan item...'}),
+            'ukuran': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'ukuran item...'}),
+            # 'ukuran': Select(attrs={'class':'inventoryFormTextfield'}),
             'harga': NumberInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'harga item...'}),
         }
     
