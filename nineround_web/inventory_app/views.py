@@ -139,14 +139,14 @@ def newEvent(request):
             for i in deleted_id:
                 request.session['barcode'].remove(i)
     request.session.modified = True
-    items = Inventory.objects.filter(id__in=request.session['barcode']).order_by('id')
+    items = Inventory.objects.filter(id__in=request.session['barcode']).order_by('items', 'id')
     context = {'form':form, 'items':items}
     return render(request, 'inventory_app/new-event.html', context=context)
 
 @login_required(login_url='loginPage')
 @user_passes_test(admin_superadmin_only)
 def eventDetail(request, pk):
-    event_details = Inventory.objects.filter(items_event_location=pk).order_by('id') # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
+    event_details = Inventory.objects.filter(items_event_location=pk).order_by('items', 'id') # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
     event = Event.objects.filter(id=pk)
     context = {'event_details':event_details, 'event':event}
 
@@ -246,7 +246,7 @@ def stockChecking(request, pk):
             print(a)
             print('done, it clicked <----')
 
-    event_details = Inventory.objects.filter(items_event_location=pk).annotate(items_status = F('item_last_status')).order_by('id') 
+    event_details = Inventory.objects.filter(items_event_location=pk).annotate(items_status = F('item_last_status')).order_by('items', 'id')
     total_count = Inventory.objects.filter(items_event_location=pk).count()
     terjual_count = Inventory.objects.filter(item_last_status='Terjual', items_event_location=pk).count()
     barang_tersedia_count = Inventory.objects.filter(item_last_status='Tersedia', items_event_location=pk).count()
@@ -265,54 +265,43 @@ def stockChecking(request, pk):
 @login_required(login_url='loginPage')
 @user_passes_test(admin_superadmin_only)
 def inventoryPage(request):
-    items = Inventory.objects.all().order_by('id')
+    items = Inventory.objects.all().order_by('items_group', 'id')
     if request.method == 'POST' and request.POST.get('add-button'):
         return redirect('inventoryAddItem')
     elif request.method == 'POST' and request.POST.get('delete-button'):
         return redirect('inventoryDeleteItem')
     elif request.method == 'POST' and request.POST.get('submit-upload'):
-        # print('--->',request.FILES)
-        # print('--->',request.FILES['upload-button'])
-        try:
+        # try:
             if 2621440 < request.FILES['upload-button'].size:
                 print('error bro')
                 raise MemoryError
             excelParser(request.FILES['upload-button'])
             del request.FILES['upload-button']
-        except:
-            messages.error(request, 'File size is too much or id is used or wrong excel format!')
+        # except:
+        #     messages.error(request, 'File size is too much or id is used or wrong excel format!')
 
     context = {'items':items}
 
     return render(request, 'inventory_app/inventory.html', context=context)
 
 
-
 def excelParser(file):
     df = pd.read_excel(file)
-    ids_in_db = Inventory.objects.values_list('id', flat=True)
-    print('processing data parsing ---->')
     data_to_be_inputted = []
     for d in df.values:
-        print(d[0])
-        print(d[1])
-        print(d[2])
-        print(d[3])
-        print(d[4])
+        print(d)
         new_item = Inventory(
-                                id = d[0],
-                                nama = d[1],
-                                keterangan = d[2],
-                                ukuran = d[3],
-                                harga = d[4]
+                                id = str(d[0]).strip().upper(),
+                                nama = d[1].strip().capitalize(),
+                                keterangan = d[2].strip().capitalize(),
+                                ukuran = str(d[3]).strip().upper(),
+                                harga = str(d[4]).strip(),
+                                items_group = d[5].strip().capitalize()
                             )
         new_item.full_clean()
         data_to_be_inputted.append(new_item)
-    print('parsing done <-----')
     for vd in data_to_be_inputted:
         vd.save()
-    print('parsing done <-----')
-
 
 
 @login_required(login_url='loginPage')
@@ -412,6 +401,7 @@ def inventoryAddItem(request):
     context = {'form':form, 'items':request.session["temp_inven"], 'raise_warning':raise_warning}
     return render(request, 'inventory_app/inventory-add-item.html', context=context)
 
+
 @login_required(login_url='loginPage')
 @user_passes_test(superadmin_only)
 def inventoryDeleteItem(request):
@@ -426,7 +416,7 @@ def inventoryDeleteItem(request):
             request.session['temp_item_list_to_be_deleted_from_inventory'].append(current_id)
 
     # show item yang dimasukkan melalui add item
-    items_to_be_deleted = Inventory.objects.filter(id__in=request.session['temp_item_list_to_be_deleted_from_inventory']).order_by('id')
+    items_to_be_deleted = Inventory.objects.filter(id__in=request.session['temp_item_list_to_be_deleted_from_inventory']).order_by('items_group', 'id')
     
     if request.method == 'POST' and request.POST.get('submit-button'):
         items_to_be_deleted.delete()
@@ -448,7 +438,7 @@ def inventoryDeleteItem(request):
 @login_required(login_url='loginPage')
 @user_passes_test(admin_superadmin_only)
 def barcodeGenerator(request):
-    item = Inventory.objects.all().order_by('id')
+    item = Inventory.objects.all().order_by('items_group', 'id')
     context = {'items':item}
     if request.POST.getlist('selected_items'):
         # generate barcode images
