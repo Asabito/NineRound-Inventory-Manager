@@ -27,7 +27,7 @@ class EventForm(ModelForm):
 class InventoryForm(ModelForm):
     class Meta:
         model = Inventory
-        fields = ('id', 'nama', 'keterangan', 'ukuran', 'harga')
+        fields = ('id', 'nama', 'keterangan', 'ukuran', 'harga', 'items_group')
         widgets = {
             'id': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'id item...', 'autofocus':''}),
             'nama': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'nama item...'}),
@@ -35,5 +35,6 @@ class InventoryForm(ModelForm):
             'ukuran': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'ukuran item...'}),
             # 'ukuran': Select(attrs={'class':'inventoryFormTextfield'}),
             'harga': NumberInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'harga item...'}),
+            'items_group': TextInput(attrs={'class':'inventoryFormTextfield', 'placeholder':'group item...'}),
         }
     

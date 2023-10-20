@@ -33,11 +33,11 @@
     }
 
     .namaPakaianColumn {
-        width: 22%;
+        width: 15%;
     }
 
     .keteranganColumn {
-        width: 40%;
+        width: 43%;
     }
 
     .ukuranColumn {
@@ -48,8 +48,8 @@
         width: 12%;
     }
 
-    .statusColumn {
-        width: 15%;
+    .groupColumn {
+        width: 10%;
     }
 /* ----------------------------------- Table ----------------------------------- */
 #buttons{
@@ -101,6 +101,7 @@
                 <div class="keteranganColumn">Keterangan</div>
                 <div class="ukuranColumn">Ukuran</div>
                 <div class="hargaColumn">Harga</div>
+                <div class="groupColumn">Group</div>
             </div>
             <div style="width: 10px;"></div>
         </div>
@@ -113,6 +114,7 @@
                     <div class="keteranganColumn">{{item.keterangan}}</div>
                     <div class="ukuranColumn">{{item.ukuran}}</div>
                     <div class="hargaColumn">Rp {{item.harga | floatformat | intcomma}}</div>
+                    <div class="groupColumn">{{item.items_group}}</div>
                 </div>
             {% endfor %}
         </div>

@@ -55,6 +55,7 @@ class Inventory(models.Model):
     ]
     item_last_status = models.CharField(max_length=18, choices=itemLastStatusChoices, default='Tersedia')
     items_event_location = models.ForeignKey(Event, on_delete=models.CASCADE, null=True, blank=True)
+    items_group = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self) -> str:
         return self.nama

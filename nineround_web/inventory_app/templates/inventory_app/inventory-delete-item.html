@@ -101,19 +101,19 @@
         }
 
         .namaPakaian {
-            width: 30%;
+            width: 15%;
         }
 
         .keteranganPakaian {
-            width: 45%;
+            width: 40%;
         }
 
         .ukuranPakaian {
-            width: 7%;
+            width: 10%;
         }
 
         .hargaPakaian {
-            width: 7%;
+            width: 15%;
         }
     /* ----------------------------------- Bottom ----------------------------------- */
     #bottomButtons {
@@ -179,6 +179,7 @@
             <div class="keteranganPakaian">Keterangan</div>
             <div class="ukuranPakaian">Ukuran</div>
             <div class="hargaPakaian">Harga</div>
+            <div class="groupPakaian">Group</div>
         </div>
         <div class="scrollablePartTable" style="height:400px;">
             {% for item in items_to_be_deleted %}
@@ -189,6 +190,7 @@
                 <div class="keteranganPakaian">{{item.keterangan}}</div>
                 <div class="ukuranPakaian">{{item.ukuran}}</div>
                 <div class="hargaPakaian">Rp {{item.harga | floatformat | intcomma}}</div>
+                <div class="groupPakaian">{{item.items_group}}</div>
             </div>
             {% endfor %}
         </div>

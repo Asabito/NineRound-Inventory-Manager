@@ -9,13 +9,15 @@
     }
 
     .inputRow {
-        display: inline-flex;
+        display: flex;
+        flex-wrap: wrap;
+        width: 70%;
         margin: 0 20px 20px 30px;
-
     }
 
     .inputLabels {
         font-weight: bold;
+        margin-top: 8px;
     }
 
     .labelAndFields {
@@ -53,7 +55,7 @@
 
     /* ----------------------------------- List heading ----------------------------------- */
     #listHeading {
-        margin: 30px 30px 5px 30px;
+        margin: 10px 30px 5px 30px;
         /* border: 1px solid black; */
         display: flex;
     }
@@ -75,7 +77,7 @@
     /* ----------------------------------- Table ----------------------------------- */
     #itemTable {
         /* margin: 20px 20px 0 10px; */
-        margin: 5px 30px 20px 30px;
+        /* margin: 5px 30px 20px 30px; */
 
         height: fit-content;
     }
@@ -103,11 +105,11 @@
     }
 
     .namaPakaian {
-        width: 30%;
+        width: 15%;
     }
 
     .keteranganPakaian {
-        width: 45%;
+        width: 43%;
     }
 
     .ukuranPakaian {
@@ -115,7 +117,7 @@
     }
 
     .hargaPakaian {
-        width: 7%;
+        width: 12%;
     }
 
     /* ----------------------------------- Bottom ----------------------------------- */
@@ -126,7 +128,7 @@
         justify-content: center;
         height: 100px;
         /* border: 1px solid black; */
-        margin: 20px 20px 0 0;
+        /* margin: 20px 20px 0 0; */
     }
 
     #bottomButtons input {
@@ -198,8 +200,9 @@
             <div class="keteranganPakaian">Keterangan</div>
             <div class="ukuranPakaian">Ukuran</div>
             <div class="hargaPakaian">Harga</div>
+            <div class="groupPakaian">Group</div>
         </div>
-        <div class="scrollablePartTable" style="height:400px;">
+        <div class="scrollablePartTable" style="height:400px; ">
             {% for item in items %}
             <div class="itemTableRow">
                 <div class="checkBoxCol"><input class="checkboxes" type="checkbox" name="items_to_delete"
@@ -210,6 +213,7 @@
                 <div class="keteranganPakaian">{{item.item_keterangan}}</div>
                 <div class="ukuranPakaian">{{item.item_ukuran}}</div>
                 <div class="hargaPakaian">Rp {{item.item_harga | floatformat | intcomma}}</div>
+                <div class="groupPakaian">{{item.items_group}}</div>
             </div>
             {% endfor %}
         </div>

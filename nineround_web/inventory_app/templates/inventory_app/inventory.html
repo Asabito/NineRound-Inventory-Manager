@@ -54,11 +54,11 @@
     }
 
     .namaPakaianColumn {
-        width: 22%;
+        width: 15%;
     }
 
     .keteranganColumn {
-        width: 40%;
+        width: 35%;
     }
 
     .ukuranColumn {
@@ -72,8 +72,8 @@
     .statusColumn {
         width: 15%;
     }
-    lokasiColumn{
-        width: 15%;
+    .lokasiColumn{
+        width: 13%;
     }
 </style>
 
@@ -113,6 +113,7 @@
             <div class="ukuranColumn">Ukuran</div>
             <div class="hargaColumn">Harga</div>
             <div class="lokasiColumn">Lokasi</div>
+            <div class="groupColumn">Group</div>
         </div>
         <div style="width: 10px;"></div>
     </div>
@@ -125,6 +126,7 @@
             <div class="ukuranColumn">{{item.ukuran}}</div>
             <div class="hargaColumn">Rp {{item.harga | floatformat | intcomma}}</div>
             <div class="lokasiColumn">{{item.items_event_location}}</div>
+            <div class="groupColumn">{{item.items_group}}</div>
         </div>
         {% endfor %}
     </div>

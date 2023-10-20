@@ -71,19 +71,19 @@
     }
     
     .namaPakaianHeading {
-        width: 28%;
+        width: 20%;
     }
     
     .keteranganHeading {
-        width: 45%;
+        width: 40%;
     }
     
     .ukuranHeading {
-        width: 10%;
+        width: 8%;
     }
     
     .hargaHeading {
-        width: 10%;
+        width: 12%;
     }
     /* ----------------------------------- Footer button ----------------------------------- */
     
@@ -133,6 +133,7 @@
             <div class="keteranganHeading">Keterangan</div>
             <div class="ukuranHeading">Ukuran</div>
             <div class="hargaHeading">Harga</div>
+            <div class="groupHeading">Group</div>
         </div>
         <div style="width: 10px;"></div>
     </div>
@@ -144,6 +145,7 @@
             <div class="keteranganHeading">{{event_detail.keterangan}}</div>
             <div class="ukuranHeading">{{event_detail.ukuran}}</div>
             <div class="hargaHeading">Rp {{event_detail.harga | floatformat | intcomma}}</div>
+            <div class="groupHeading">{{event_detail.items_group}}</div>
         </div>
         {% endfor %}
     </div>

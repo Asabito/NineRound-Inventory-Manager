@@ -103,11 +103,11 @@
     }
 
     .namaPakaianHeading {
-        width: 22%;
+        width: 15%;
     }
 
     .keteranganHeading {
-        width: 40%;
+        width: 37%;
     }
 
     .ukuranHeading {
@@ -119,7 +119,7 @@
     }
 
     .statusHeading {
-        width: 15%;
+        width: 8%;
     }
 
 
@@ -228,6 +228,7 @@
             <div class="ukuranHeading">Ukuran</div>
             <div class="hargaHeading">Harga</div>
             <div class="statusHeading">Status</div>
+            <div class="groupHeading">Group</div>
         </div>
         <div style="width: 10px;"></div>
     </div>
@@ -239,7 +240,8 @@
             <div class="keteranganHeading">{{event_item.keterangan}}</div>
             <div class="ukuranHeading">{{event_item.ukuran}}</div>
             <div class="hargaHeading">Rp {{event_item.harga | floatformat | intcomma}}</div>
-            <div class="statusHeading">{{event_item.items_status}}</div>
+            <div class="statusHeading">{{event_item.item_last_status}}</div>
+            <div class="groupHeading">{{event_item.items_group}}</div>
         </div>
         {% endfor %}
     </div>

@@ -355,6 +355,7 @@ def inventoryAddItem(request):
                 'item_keterangan' : request.POST["keterangan"],
                 'item_ukuran' : request.POST["ukuran"],
                 'item_harga' : request.POST["harga"],
+                'items_group' : request.POST["items_group"],
             })
             # save session
             request.session.modified = True
@@ -392,7 +393,8 @@ def inventoryAddItem(request):
                                  nama = x['item_nama'],
                                  keterangan = x['item_keterangan'],
                                  ukuran = x['item_ukuran'],
-                                 harga = x['item_harga']
+                                 harga = x['item_harga'],
+                                 items_group = x['items_group'],
                                 )
             new_item.save()
             # request.session.flush()
