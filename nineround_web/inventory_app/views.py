@@ -246,7 +246,7 @@ def stockChecking(request, pk):
             print(a)
             print('done, it clicked <----')
 
-    event_details = Inventory.objects.filter(items_event_location=pk).annotate(items_status = F('item_last_status')).order_by('items', 'id')
+    event_details = Inventory.objects.filter(items_event_location=pk).annotate(items_status = F('item_last_status')).order_by('items_group', 'id')
     total_count = Inventory.objects.filter(items_event_location=pk).count()
     terjual_count = Inventory.objects.filter(item_last_status='Terjual', items_event_location=pk).count()
     barang_tersedia_count = Inventory.objects.filter(item_last_status='Tersedia', items_event_location=pk).count()
