@@ -139,14 +139,14 @@ def newEvent(request):
             for i in deleted_id:
                 request.session['barcode'].remove(i)
     request.session.modified = True
-    items = Inventory.objects.filter(id__in=request.session['barcode']).order_by('items', 'id')
+    items = Inventory.objects.filter(id__in=request.session['barcode']).order_by('items_group', 'id')
     context = {'form':form, 'items':items}
     return render(request, 'inventory_app/new-event.html', context=context)
 
 @login_required(login_url='loginPage')
 @user_passes_test(admin_superadmin_only)
 def eventDetail(request, pk):
-    event_details = Inventory.objects.filter(items_event_location=pk).order_by('items', 'id') # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
+    event_details = Inventory.objects.filter(items_event_location=pk).order_by('items_group', 'id') # query all items in Inventory, dimana events id sama dengan pk yang dipassing (many to many relationship). Python memberikan kemudahan bagi developer untuk melakukan lookup dengan menggunakan *namaTabelLain*__*kolomTabelLainTersebut*
     event = Event.objects.filter(id=pk)
     context = {'event_details':event_details, 'event':event}
 
