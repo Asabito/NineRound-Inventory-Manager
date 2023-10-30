@@ -34,7 +34,11 @@ import magic
 from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 IMG_DIR = os.path.join(BASE_DIR, 'inventory_app', 'temp', 'img')
+if not os.path.exists(IMG_DIR):
+    os.makedirs(IMG_DIR)
 DOC_DIR = os.path.join(BASE_DIR, 'inventory_app', 'temp', 'doc')
+if not os.path.exists(DOC_DIR):
+    os.makedirs(DOC_DIR)
 
 # upload
 import pandas as pd
