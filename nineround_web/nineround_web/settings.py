@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^z3d9ruel((xdvi%r=+gmh&c5ag-g4^wjhl78x96h_xfu()6=y'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
 # ALLOWED_HOSTS = []
 ALLOWED_HOSTS = ['127.0.0.1', 'inventory.nineround.web.id']
